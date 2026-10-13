@@ -1,0 +1,43 @@
+# Junta as partes enviadas pelo tools/publicar.js, confere, cria a release e publica o aviso de atualização.
+name: publicar
+on:
+  workflow_dispatch:
+    inputs:
+      versao:
+        description: "Versão (ex.: 2.5.0)"
+        required: true
+permissions:
+  contents: write
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: envio-${{ inputs.versao }}
+          path: envio
+      - name: Juntar as partes e conferir
+        run: |
+          mkdir saida
+          while read -r f; do [ -n "$f" ] && cat envio/partes/"$f".* > saida/"$f"; done < envio/arquivos.txt
+          cd saida && sha256sum -c ../envio/sha256.txt
+      - name: Criar a release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "v${{ inputs.versao }}" saida/* --repo "$GITHUB_REPOSITORY" --title "Motion Church ${{ inputs.versao }}" --notes-file envio/notas.md --latest
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: main
+      - name: Publicar o aviso de atualização
+        run: |
+          cp envio/atualizacao.json main/atualizacao.json
+          cp envio/README.md main/README.md
+          cd main
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Versão ${{ inputs.versao }}"
+          git push
+      - name: Apagar o ramo provisório
+        run: git -C envio push origin --delete "envio-${{ inputs.versao }}"
