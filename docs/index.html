@@ -8,15 +8,17 @@
 <meta property="og:title" content="Motion Church · Mapeamento de LED para igrejas">
 <meta property="og:description" content="Clipes, letras, Bíblia, câmera ao vivo, efeitos e avisos nas telas de LED do palco. Mac e Windows. 15 dias grátis.">
 <meta property="og:image" content="https://sekaosilva.github.io/motion-church/img/tela-evento.jpg">
-<meta name="theme-color" content="#0c0e13">
+<meta name="theme-color" content="#03060c">
 <link rel="icon" href="img/icone.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,500;0,600;0,700;1,700;1,800;1,900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0c0e13;--bg2:#11141b;--card:#161a23;--card2:#1c212c;--line:#262c39;--line2:#353d4e;
-  --fg:#eef0f5;--dim:#a2a9ba;--faint:#6d7488;
-  --accent:#f6a821;--accent2:#ffbf4a;--ink:#1b1303;--blue:#3f8cff;--live:#ff5b4a;
+  --bg:#03060c;--bg2:#060b15;--card:#0a1220;--card2:#0f1a2d;--line:#16243a;--line2:#21385a;
+  --fg:#eef4ff;--dim:#9fb0c8;--faint:#5f7190;
+  --accent:#1e9bff;--accent2:#5cc3ff;--ink:#ffffff;--blue:#1e9bff;--live:#ff5b4a;
+  --glow:0 0 22px rgba(30,155,255,.55),0 0 2px rgba(120,200,255,.9);
+  --chrome:linear-gradient(180deg,#ffffff 0%,#e9eef5 42%,#a9b3c1 58%,#f4f7fb 100%);
   --r:14px;--max:1160px;
   color-scheme:dark;
 }
@@ -26,9 +28,10 @@ body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 Manrope,"Segoe
 a{color:inherit}
 img{max-width:100%;height:auto;display:block}
 .wrap{max-width:var(--max);margin:0 auto;padding:0 20px}
-h1,h2,h3{line-height:1.12;letter-spacing:-.02em;margin:0}
+h1,h2,h3{line-height:1.08;letter-spacing:-.01em;margin:0;font-family:'Exo 2',Manrope,sans-serif;font-style:italic;font-weight:800}
+h2{background:var(--chrome);-webkit-background-clip:text;background-clip:text;color:transparent}
 h2{font-size:clamp(28px,4vw,40px);font-weight:800}
-.eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.eyebrow{font:italic 700 13px/1.2 'Exo 2',Manrope,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--accent2);text-shadow:0 0 14px rgba(30,155,255,.6)}
 .lead{color:var(--dim);font-size:clamp(16px,1.6vw,18.5px);max-width:640px}
 section{padding:92px 0}
 .sec-head{display:flex;flex-direction:column;gap:12px;margin-bottom:40px}
@@ -42,8 +45,8 @@ section{padding:92px 0}
 .nav nav a:hover{color:var(--fg)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border-radius:10px;padding:13px 22px;font:700 15.5px/1 Manrope,sans-serif;text-decoration:none;border:1px solid transparent;cursor:pointer;transition:transform .15s,background .15s,border-color .15s}
 .btn:active{transform:translateY(1px)}
-.btn.primary{background:var(--accent);color:var(--ink)}
-.btn.primary:hover{background:var(--accent2)}
+.btn.primary{background:linear-gradient(180deg,#38b2ff,#0f78f0);color:#fff;border-color:rgba(140,210,255,.55);box-shadow:0 6px 24px -6px rgba(30,155,255,.75),inset 0 1px 0 rgba(255,255,255,.35)}
+.btn.primary:hover{background:linear-gradient(180deg,#5cc3ff,#1e8bff);box-shadow:0 8px 30px -4px rgba(30,155,255,.9),inset 0 1px 0 rgba(255,255,255,.4)}
 .btn.ghost{background:transparent;border-color:var(--line2);color:var(--fg)}
 .btn.ghost:hover{border-color:var(--dim)}
 .btn.sm{padding:9px 15px;font-size:14px}
@@ -51,18 +54,20 @@ section{padding:92px 0}
 
 /* abertura */
 .hero{position:relative;padding:76px 0 40px;overflow:hidden}
-.hero::before{content:"";position:absolute;inset:-30% -10% auto;height:720px;background:radial-gradient(closest-side at 30% 40%,rgba(246,168,33,.16),transparent 70%),radial-gradient(closest-side at 75% 30%,rgba(63,140,255,.16),transparent 70%);pointer-events:none}
+.hero::before{content:"";position:absolute;inset:-30% -10% auto;height:720px;background:radial-gradient(closest-side at 28% 38%,rgba(30,155,255,.22),transparent 70%),radial-gradient(closest-side at 78% 30%,rgba(30,120,255,.18),transparent 70%);pointer-events:none}
 .hero .wrap{position:relative;display:grid;gap:52px}
 .hero-top{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
 .hero h1{font-size:clamp(38px,5.6vw,64px);font-weight:800}
-.hero h1 em{font-style:normal;color:var(--accent)}
+.hero h1{background:var(--chrome);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 2px 0 rgba(0,0,0,.6))}
+.hero h1 em{font-style:italic;background:linear-gradient(180deg,#7fd2ff,#1e9bff 60%,#0a6fe0);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 18px rgba(30,155,255,.55))}
+.hero-logo{width:min(520px,100%);height:auto;margin:0 0 22px -10px;filter:drop-shadow(0 0 30px rgba(30,155,255,.35))}
 .hero .lead{margin:20px 0 30px}
 .cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
 .dlb{padding:12px 20px;text-align:left}.dlb span{display:flex;flex-direction:column;gap:3px}.dlb b{font-size:15.5px}.dlb small{font-size:12px;font-weight:600;opacity:.72}
 .alt{margin:14px 0 0;color:var(--dim);font-size:14px}.alt a{color:var(--accent2)}
 .meta{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--faint);font-size:13.5px}
 .meta span{display:inline-flex;align-items:center;gap:7px}
-.meta i{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block}
+.meta i{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);display:inline-block}
 .pills{display:flex;flex-wrap:wrap;gap:10px}
 .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:600;color:var(--dim)}
 .pill b{color:var(--fg)}
@@ -73,8 +78,8 @@ section{padding:92px 0}
 
 /* recursos */
 .feat{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.f{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;display:flex;flex-direction:column;gap:10px}
-.f .ic{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;background:rgba(246,168,33,.12);color:var(--accent)}
+.f{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:var(--r);padding:24px;display:flex;flex-direction:column;gap:10px}
+.f .ic{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;background:rgba(30,155,255,.12);color:var(--accent2);box-shadow:inset 0 0 0 1px rgba(30,155,255,.35),0 0 18px -4px rgba(30,155,255,.6)}
 .f h3{font-size:18px;font-weight:700}
 .f p{margin:0;color:var(--dim);font-size:15px}
 
@@ -82,8 +87,8 @@ section{padding:92px 0}
 #baixar{background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .dl{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .d{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px;display:flex;flex-direction:column;gap:14px}
-.d.rec{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
-.d .tag{position:absolute;top:-11px;left:22px;background:var(--accent);color:var(--ink);font-size:12px;font-weight:800;border-radius:6px;padding:3px 9px;letter-spacing:.02em}
+.d.rec{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset,0 0 36px -10px rgba(30,155,255,.75)}
+.d .tag{position:absolute;top:-11px;left:22px;background:var(--accent);color:#fff;box-shadow:var(--glow);font-size:12px;font-weight:800;border-radius:6px;padding:3px 9px;letter-spacing:.02em}
 .d .os{display:flex;align-items:center;gap:12px}
 .d .os svg{color:var(--fg)}
 .d h3{font-size:20px;font-weight:800}
@@ -113,13 +118,13 @@ section{padding:92px 0}
 .ls{all:unset;cursor:pointer;display:flex;flex-direction:column;border-radius:12px;overflow:hidden;background:var(--card);border:1px solid var(--line);transition:border-color .15s,transform .15s}
 .ls:hover{border-color:var(--line2);transform:translateY(-2px)}
 .ls:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.ls.on{border-color:var(--accent)}
+.ls.on{border-color:var(--accent);box-shadow:0 0 22px -6px rgba(30,155,255,.8)}
 .ls .th{position:relative;aspect-ratio:16/9;background:#000}
 .ls .th img{width:100%;height:100%;object-fit:cover;opacity:.85}
 .ls .th .t{position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.75);font-size:12px;font-weight:700;border-radius:5px;padding:2px 7px}
 .ls .th .pl{position:absolute;inset:0;display:grid;place-items:center;opacity:0;transition:opacity .15s}
 .ls:hover .pl,.ls.on .pl{opacity:1}
-.ls .pl span{width:44px;height:44px;border-radius:50%;background:rgba(246,168,33,.95);display:grid;place-items:center;color:var(--ink)}
+.ls .pl span{width:44px;height:44px;border-radius:50%;background:rgba(30,155,255,.95);display:grid;place-items:center;color:#fff;box-shadow:var(--glow)}
 .ls .tx{padding:12px 14px 14px;display:flex;flex-direction:column;gap:3px}
 .ls .tx small{font-size:12px;font-weight:800;color:var(--faint);letter-spacing:.06em;text-transform:uppercase}
 .ls .tx b{font-size:15px;font-weight:700;line-height:1.3}
@@ -127,7 +132,7 @@ section{padding:92px 0}
 /* colaborar */
 .colab{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:stretch}
 .box{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:30px}
-.price{background:linear-gradient(160deg,#21180a,#161a23 55%);border-color:#4a3410;display:flex;flex-direction:column;gap:14px}
+.price{background:linear-gradient(160deg,#08254a,#0a1220 60%);border-color:#1f5fa8;box-shadow:0 0 40px -18px rgba(30,155,255,.8);display:flex;flex-direction:column;gap:14px}
 .price .v{font-size:52px;font-weight:800;letter-spacing:-.03em;line-height:1}
 .price .v small{font-size:18px;color:var(--dim);font-weight:600;letter-spacing:0}
 .price p{margin:0;color:var(--dim)}
@@ -179,6 +184,7 @@ footer img{height:28px;width:auto;opacity:.9}
 <section class="hero"><div class="wrap">
   <div class="hero-top">
     <div>
+      <img class="hero-logo" src="img/logo-grande.png" alt="Motion Church, By Seraph" width="1100" height="367">
       <div class="eyebrow">Para a equipe de mídia da igreja</div>
       <h1 style="margin-top:14px">O culto inteiro nas telas de LED, <em>sem complicação.</em></h1>
       <p class="lead">Mapeie o painel uma vez e, no culto, só clique: vídeos, letras de música, Bíblia, câmera ao vivo, efeitos e avisos saindo prontos para cada tela do palco.</p>
@@ -255,7 +261,7 @@ footer img{height:28px;width:auto;opacity:.9}
       <div><i>3</i><p style="margin:0"><b>Receba o código de colaborador</b><span>Mande o comprovante pelo WhatsApp e receba o código com o nome da sua igreja. Cole no programa e pronto.</span></p></div>
     </div>
     <div class="box price">
-      <div class="eyebrow" style="color:var(--accent2)">Colaborador</div>
+      <div class="eyebrow">Colaborador</div>
       <div class="v">R$ 25<small> ou mais · por ano</small></div>
       <p>Vale em todos os computadores da igreja. Sem colaboração, o programa continua funcionando, com a marca "versão de teste" nas telas.</p>
       <a class="btn primary" href="#baixar" style="align-self:flex-start;margin-top:auto">Começar o teste grátis</a>
