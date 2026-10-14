@@ -6,6 +6,8 @@ Programa para **mapeamento de painéis de LED e cultos**: clipes, letras de mús
 
 ## Baixar
 
+**Site com os downloads e as videoaulas: https://sekaosilva.github.io/motion-church/**
+
 | Computador | Arquivo |
 |---|---|
 | Mac com chip Apple (M1, M2, M3, M4) | [MotionChurch-Mac-AppleSilicon.zip](https://github.com/sekaosilva/motion-church/releases/latest/download/MotionChurch-Mac-AppleSilicon.zip) |
