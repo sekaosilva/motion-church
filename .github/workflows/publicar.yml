@@ -24,7 +24,14 @@ jobs:
       - name: Criar a release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "v${{ inputs.versao }}" saida/* --repo "$GITHUB_REPOSITORY" --title "Motion Church ${{ inputs.versao }}" --notes-file envio/notas.md --latest
+        run: |
+          # o GitHub às vezes recusa na primeira vez: tenta até 3 vezes, apagando a release pela metade
+          for i in 1 2 3; do
+            gh release create "v${{ inputs.versao }}" saida/* --repo "$GITHUB_REPOSITORY" --title "Motion Church ${{ inputs.versao }}" --notes-file envio/notas.md --latest && exit 0
+            gh release delete "v${{ inputs.versao }}" --repo "$GITHUB_REPOSITORY" --yes --cleanup-tag || true
+            sleep 20
+          done
+          exit 1
       - uses: actions/checkout@v4
         with:
           ref: main
