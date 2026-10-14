@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Motion Church · Mapeamento de LED para igrejas</title>
+<meta name="description" content="Programa para mapeamento de painéis de LED e cultos: clipes, letras, Bíblia, câmera ao vivo, efeitos e avisos. Para Mac e Windows, funciona sem internet. 15 dias grátis.">
+<meta property="og:title" content="Motion Church · Mapeamento de LED para igrejas">
+<meta property="og:description" content="Clipes, letras, Bíblia, câmera ao vivo, efeitos e avisos nas telas de LED do palco. Mac e Windows. 15 dias grátis.">
+<meta property="og:image" content="https://sekaosilva.github.io/motion-church/img/tela-evento.jpg">
+<meta name="theme-color" content="#0c0e13">
+<link rel="icon" href="img/icone.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c0e13;--bg2:#11141b;--card:#161a23;--card2:#1c212c;--line:#262c39;--line2:#353d4e;
+  --fg:#eef0f5;--dim:#a2a9ba;--faint:#6d7488;
+  --accent:#f6a821;--accent2:#ffbf4a;--ink:#1b1303;--blue:#3f8cff;--live:#ff5b4a;
+  --r:14px;--max:1160px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 Manrope,"Segoe UI",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+img{max-width:100%;height:auto;display:block}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 20px}
+h1,h2,h3{line-height:1.12;letter-spacing:-.02em;margin:0}
+h2{font-size:clamp(28px,4vw,40px);font-weight:800}
+.eyebrow{font-size:12.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.lead{color:var(--dim);font-size:clamp(16px,1.6vw,18.5px);max-width:640px}
+section{padding:92px 0}
+.sec-head{display:flex;flex-direction:column;gap:12px;margin-bottom:40px}
+
+/* topo */
+.nav{position:sticky;top:0;z-index:20;background:rgba(12,14,19,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.05)}
+.nav .wrap{display:flex;align-items:center;gap:28px;height:66px}
+.nav img{height:34px;width:auto}
+.nav nav{display:flex;gap:24px;margin-left:auto;font-size:14.5px;font-weight:600}
+.nav nav a{text-decoration:none;color:var(--dim)}
+.nav nav a:hover{color:var(--fg)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border-radius:10px;padding:13px 22px;font:700 15.5px/1 Manrope,sans-serif;text-decoration:none;border:1px solid transparent;cursor:pointer;transition:transform .15s,background .15s,border-color .15s}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--accent);color:var(--ink)}
+.btn.primary:hover{background:var(--accent2)}
+.btn.ghost{background:transparent;border-color:var(--line2);color:var(--fg)}
+.btn.ghost:hover{border-color:var(--dim)}
+.btn.sm{padding:9px 15px;font-size:14px}
+.btn svg{flex:none}
+
+/* abertura */
+.hero{position:relative;padding:76px 0 40px;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:-30% -10% auto;height:720px;background:radial-gradient(closest-side at 30% 40%,rgba(246,168,33,.16),transparent 70%),radial-gradient(closest-side at 75% 30%,rgba(63,140,255,.16),transparent 70%);pointer-events:none}
+.hero .wrap{position:relative;display:grid;gap:52px}
+.hero-top{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+.hero h1{font-size:clamp(38px,5.6vw,64px);font-weight:800}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero .lead{margin:20px 0 30px}
+.cta{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.meta{margin-top:18px;display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--faint);font-size:13.5px}
+.meta span{display:inline-flex;align-items:center;gap:7px}
+.meta i{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block}
+.pills{display:flex;flex-wrap:wrap;gap:10px}
+.pill{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:600;color:var(--dim)}
+.pill b{color:var(--fg)}
+.shot{border-radius:16px;overflow:hidden;border:1px solid var(--line2);box-shadow:0 40px 90px -30px rgba(0,0,0,.9),0 0 0 6px rgba(255,255,255,.02);background:#0a0c11}
+.shot .bar{display:flex;gap:7px;padding:11px 14px;background:#141820;border-bottom:1px solid var(--line)}
+.shot .bar i{width:11px;height:11px;border-radius:50%;background:#3a4152}
+.shot .bar i:first-child{background:#ff5f57}.shot .bar i:nth-child(2){background:#febc2e}.shot .bar i:nth-child(3){background:#28c840}
+
+/* recursos */
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.f{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;display:flex;flex-direction:column;gap:10px}
+.f .ic{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;background:rgba(246,168,33,.12);color:var(--accent)}
+.f h3{font-size:18px;font-weight:700}
+.f p{margin:0;color:var(--dim);font-size:15px}
+
+/* baixar */
+#baixar{background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.dl{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.d{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px;display:flex;flex-direction:column;gap:14px}
+.d.rec{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.d .tag{position:absolute;top:-11px;left:22px;background:var(--accent);color:var(--ink);font-size:12px;font-weight:800;border-radius:6px;padding:3px 9px;letter-spacing:.02em}
+.d .os{display:flex;align-items:center;gap:12px}
+.d .os svg{color:var(--fg)}
+.d h3{font-size:20px;font-weight:800}
+.d .sub{color:var(--dim);font-size:14.5px;margin:0}
+.d .size{color:var(--faint);font-size:13px;margin-top:auto}
+.d .btn{width:100%}
+.which{margin-top:18px;color:var(--dim);font-size:14.5px}
+.which b{color:var(--fg)}
+.steps{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:40px}
+.st{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px}
+.st h3{font-size:17px;font-weight:800;display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.st ol{margin:0;padding-left:20px;color:var(--dim);font-size:15px;display:flex;flex-direction:column;gap:9px}
+.st ol b{color:var(--fg)}
+.note{margin-top:14px;font-size:13.5px;color:var(--faint)}
+
+/* aulas */
+.player{display:grid;grid-template-columns:1.7fr 1fr;gap:20px;align-items:start}
+.screen{border-radius:var(--r);overflow:hidden;border:1px solid var(--line2);background:#000;aspect-ratio:16/9}
+.screen video{width:100%;height:100%;display:block;background:#000}
+.now{display:flex;flex-direction:column;gap:12px;padding:6px 4px}
+.now .n{font-size:13px;font-weight:800;color:var(--accent);letter-spacing:.08em;text-transform:uppercase}
+.now h3{font-size:26px;font-weight:800}
+.now p{margin:0;color:var(--dim);font-size:15px}
+.now .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px}
+.ls{all:unset;cursor:pointer;display:flex;flex-direction:column;border-radius:12px;overflow:hidden;background:var(--card);border:1px solid var(--line);transition:border-color .15s,transform .15s}
+.ls:hover{border-color:var(--line2);transform:translateY(-2px)}
+.ls:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.ls.on{border-color:var(--accent)}
+.ls .th{position:relative;aspect-ratio:16/9;background:#000}
+.ls .th img{width:100%;height:100%;object-fit:cover;opacity:.85}
+.ls .th .t{position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.75);font-size:12px;font-weight:700;border-radius:5px;padding:2px 7px}
+.ls .th .pl{position:absolute;inset:0;display:grid;place-items:center;opacity:0;transition:opacity .15s}
+.ls:hover .pl,.ls.on .pl{opacity:1}
+.ls .pl span{width:44px;height:44px;border-radius:50%;background:rgba(246,168,33,.95);display:grid;place-items:center;color:var(--ink)}
+.ls .tx{padding:12px 14px 14px;display:flex;flex-direction:column;gap:3px}
+.ls .tx small{font-size:12px;font-weight:800;color:var(--faint);letter-spacing:.06em;text-transform:uppercase}
+.ls .tx b{font-size:15px;font-weight:700;line-height:1.3}
+
+/* colaborar */
+.colab{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:stretch}
+.box{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:30px}
+.price{background:linear-gradient(160deg,#21180a,#161a23 55%);border-color:#4a3410;display:flex;flex-direction:column;gap:14px}
+.price .v{font-size:52px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.price .v small{font-size:18px;color:var(--dim);font-weight:600;letter-spacing:0}
+.price p{margin:0;color:var(--dim)}
+.tl{display:flex;flex-direction:column;gap:18px}
+.tl div{display:grid;grid-template-columns:42px 1fr;gap:14px;align-items:start}
+.tl i{font-style:normal;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:800;background:var(--card2);border:1px solid var(--line2)}
+.tl b{display:block;font-size:16.5px}
+.tl span{color:var(--dim);font-size:15px}
+
+/* perguntas */
+.faq{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+summary{cursor:pointer;font-weight:700;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--accent);font-weight:800;font-size:20px;line-height:1}
+details[open] summary::after{content:"–"}
+details p{margin:10px 0 0;color:var(--dim);font-size:15px}
+
+footer{border-top:1px solid var(--line);padding:36px 0 50px;color:var(--faint);font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:16px 30px;align-items:center;justify-content:space-between}
+footer img{height:28px;width:auto;opacity:.9}
+
+@media (max-width:960px){
+  .hero-top,.player,.colab{grid-template-columns:1fr}
+  .feat,.dl{grid-template-columns:1fr 1fr}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .steps,.faq{grid-template-columns:1fr}
+  .nav nav{display:none}
+}
+@media (max-width:620px){
+  section{padding:64px 0}
+  .feat,.dl,.grid{grid-template-columns:1fr}
+  .wrap{padding:0 16px}
+  .nav .btn{display:none}
+  .hero{padding-top:44px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<header class="nav"><div class="wrap">
+  <a href="#topo" aria-label="Motion Church, início"><img src="img/logo.png" alt="Motion Church" width="102" height="34"></a>
+  <nav aria-label="Seções"><a href="#recursos">Recursos</a><a href="#baixar">Baixar</a><a href="#aulas">Aulas</a><a href="#colaborar">Colaborar</a><a href="#perguntas">Perguntas</a></nav>
+  <a class="btn primary sm" href="#baixar">Baixar grátis</a>
+</div></header>
+
+<main id="topo">
+<section class="hero"><div class="wrap">
+  <div class="hero-top">
+    <div>
+      <div class="eyebrow">Para a equipe de mídia da igreja</div>
+      <h1 style="margin-top:14px">O culto inteiro nas telas de LED, <em>sem complicação.</em></h1>
+      <p class="lead">Mapeie o painel uma vez e, no culto, só clique: vídeos, letras de música, Bíblia, câmera ao vivo, efeitos e avisos saindo prontos para cada tela do palco.</p>
+      <div class="cta">
+        <a class="btn primary" id="heroBtn" href="#baixar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg><span id="heroTxt">Baixar grátis</span></a>
+        <a class="btn ghost" href="#aulas">Ver as aulas</a>
+      </div>
+      <div class="meta"><span><i></i>15 dias grátis</span><span><i></i>Mac e Windows</span><span><i></i>Funciona sem internet</span><span id="verTag"><i></i>Versão 2.5</span></div>
+    </div>
+    <div class="shot"><div class="bar"><i></i><i></i><i></i></div><img src="img/tela-evento.jpg" alt="Tela do Motion Church no Evento: o palco com as telas de LED, a letra da música no ar e a grade de clipes" width="1600" height="1000"></div>
+  </div>
+</div></section>
+
+<section id="recursos" style="padding-top:40px"><div class="wrap">
+  <div class="sec-head"><div class="eyebrow">Recursos</div><h2>Tudo o que o culto precisa, num programa só</h2></div>
+  <div class="feat">
+    <div class="f"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4" width="11" height="8" rx="1"/><rect x="16" y="4" width="5" height="16" rx="1"/><rect x="3" y="14" width="11" height="6" rx="1"/></svg></div><h3>Mapeamento do painel</h3><p>Recorte o vídeo para cada tela do palco. Recebeu o mapa pronto da equipe de LED? Importe o PNG, JPG ou PSD e as telas são criadas sozinhas.</p></div>
+    <div class="f"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h10M4 18h13"/></svg></div><h3>Letras e Bíblia</h3><p>Banco de letras, versículos digitados como você fala (Jo 3:16, sl 23) e o roteiro do culto montado antes, na ordem.</p></div>
+    <div class="f"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3z"/></svg></div><h3>Câmera ao vivo</h3><p>Câmera ou placa de captura direto nas telas escolhidas, junto com os vídeos e as letras por cima.</p></div>
+    <div class="f"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div><h3>Grade de clipes</h3><p>Camadas e colunas como no Resolume: clicou, está no ar, com troca suave. Prévia antes de ir para o ar e o tempo que falta.</p></div>
+    <div class="f"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg></div><h3>Efeitos e avisos</h3><p>Estrobo, preto e branco, trocar cor e mais, no botão direito. Avisos rolando ou piscando por cima de tudo.</p></div>
+    <div class="f"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg></div><h3>Atualiza sozinho</h3><p>Quando sai uma versão nova, o programa avisa e se atualiza com um clique, sem perder os seus projetos.</p></div>
+  </div>
+</div></section>
+
+<section id="baixar"><div class="wrap">
+  <div class="sec-head"><div class="eyebrow">Baixar</div><h2>Escolha o seu computador</h2><p class="lead">Use tudo por 15 dias, de graça. Os links sempre trazem a versão mais nova.</p></div>
+  <div class="dl">
+    <div class="d" data-os="mac-arm">
+      <div class="os"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.8 1.3 10.3.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.7-1-2.7-4.2zM13.9 5c.7-.9 1.2-2 1.1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.1.1 2.3-.6 3-1.5z"/></svg><div><h3>Mac com chip Apple</h3><p class="sub">M1, M2, M3, M4</p></div></div>
+      <a class="btn primary" href="https://github.com/sekaosilva/motion-church/releases/latest/download/MotionChurch-Mac-AppleSilicon.zip" data-file="MotionChurch-Mac-AppleSilicon.zip">Baixar para Mac (chip Apple)</a>
+      <div class="size" data-size="MotionChurch-Mac-AppleSilicon.zip">Arquivo .zip · cerca de 116 MB · macOS 13 ou mais novo</div>
+    </div>
+    <div class="d" data-os="mac-intel">
+      <div class="os"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.8 1.3 10.3.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.7-1-2.7-4.2zM13.9 5c.7-.9 1.2-2 1.1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.1.1 2.3-.6 3-1.5z"/></svg><div><h3>Mac com Intel</h3><p class="sub">Processador Intel</p></div></div>
+      <a class="btn ghost" href="https://github.com/sekaosilva/motion-church/releases/latest/download/MotionChurch-Mac-Intel.zip" data-file="MotionChurch-Mac-Intel.zip">Baixar para Mac (Intel)</a>
+      <div class="size" data-size="MotionChurch-Mac-Intel.zip">Arquivo .zip · cerca de 121 MB · macOS 13 ou mais novo</div>
+    </div>
+    <div class="d" data-os="win">
+      <div class="os"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.5 10 4.5v7H3zM11 4.3 21 3v8.5H11zM3 12.5h7v7L3 18.5zM11 12.5h10V21l-10-1.4z"/></svg><div><h3>Windows</h3><p class="sub">Windows 10 ou 11, 64 bits</p></div></div>
+      <a class="btn ghost" href="https://github.com/sekaosilva/motion-church/releases/latest/download/MotionChurch-Windows.exe" data-file="MotionChurch-Windows.exe">Baixar para Windows</a>
+      <div class="size" data-size="MotionChurch-Windows.exe">Instalador .exe · cerca de 102 MB</div>
+    </div>
+  </div>
+  <p class="which">Não sabe qual é o seu Mac? Clique na maçã <b></b> no canto da tela → <b>Sobre Este Mac</b>. Se aparecer <b>Chip Apple</b>, é o primeiro; se aparecer <b>Processador Intel</b>, é o segundo.</p>
+
+  <div class="steps">
+    <div class="st"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.8 1.3 10.3.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.7-1-2.7-4.2zM13.9 5c.7-.9 1.2-2 1.1-3.2-1 0-2.3.7-3 1.6-.7.8-1.2 2-1.1 3.1 1.1.1 2.3-.6 3-1.5z"/></svg>Instalar no Mac</h3>
+      <ol><li>Abra o arquivo baixado. Ele vira o aplicativo <b>Motion Church</b>.</li><li>Arraste o Motion Church para a pasta <b>Aplicativos</b> e abra.</li><li>Na primeira vez o Mac avisa que não pode verificar o aplicativo. Clique em <b>Concluído</b>, abra <b>Ajustes do Sistema → Privacidade e Segurança</b>, role até o fim e clique em <b>Abrir Mesmo Assim</b>.</li><li>Ao usar a câmera pela primeira vez, clique em <b>Permitir</b>.</li></ol>
+      <p class="note">O aviso do passo 3 aparece só uma vez em cada Mac.</p></div>
+    <div class="st"><h3><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.5 10 4.5v7H3zM11 4.3 21 3v8.5H11zM3 12.5h7v7L3 18.5zM11 12.5h10V21l-10-1.4z"/></svg>Instalar no Windows</h3>
+      <ol><li>Abra o <b>MotionChurch-Windows.exe</b> baixado.</li><li>Se aparecer <b>"O Windows protegeu o computador"</b>, clique em <b>Mais informações</b> e depois em <b>Executar assim mesmo</b>.</li><li>Clique em <b>Instalar</b>. O atalho fica na Área de Trabalho e no menu Iniciar.</li></ol>
+      <p class="note">O aviso do passo 2 é normal para programas novos, fora da loja da Microsoft.</p></div>
+  </div>
+</div></section>
+
+<section id="aulas"><div class="wrap">
+  <div class="sec-head"><div class="eyebrow">Videoaulas</div><h2>Aprenda em poucos minutos</h2><p class="lead">Uma aula para cada assunto, com legendas. Valem para Mac e Windows.</p></div>
+  <div class="player">
+    <div class="screen"><video id="vid" controls preload="metadata" playsinline poster="img/00-visao-geral.jpg"><source id="vsrc" src="aulas/00-visao-geral.mp4" type="video/mp4"></video></div>
+    <div class="now"><div class="n" id="nowN">Visão geral</div><h3 id="nowT">O Motion Church em 6 minutos</h3><p id="nowD">Um giro pela tela e o caminho completo: montar as telas, colocar vídeos e letras e tocar o culto.</p>
+      <div class="row"><a class="btn ghost sm" id="nowDl" href="aulas/00-visao-geral.mp4" download>Baixar esta aula</a><button class="btn ghost sm" id="nowNext">Próxima aula →</button></div></div>
+  </div>
+  <div class="grid" id="grade"></div>
+</div></section>
+
+<section id="colaborar" style="background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)"><div class="wrap">
+  <div class="sec-head"><div class="eyebrow">Colaborar</div><h2>Use grátis. Depois, seja um colaborador.</h2><p class="lead">O Motion Church é mantido pela colaboração das igrejas que usam. Qualquer valor a partir de R$ 25 garante um ano de uso e ajuda as próximas versões.</p></div>
+  <div class="colab">
+    <div class="box tl">
+      <div><i>1</i><p style="margin:0"><b>15 dias grátis, com tudo liberado</b><span>Baixe, instale e use no culto. O aviso no alto da tela mostra quantos dias faltam.</span></p></div>
+      <div><i>2</i><p style="margin:0"><b>Colabore pelo próprio programa</b><span>Clique no aviso laranja: tem o QR Code do Pix, o copia e cola, e cartão ou boleto pelo Mercado Pago.</span></p></div>
+      <div><i>3</i><p style="margin:0"><b>Receba o código de colaborador</b><span>Mande o comprovante pelo WhatsApp e receba o código com o nome da sua igreja. Cole no programa e pronto.</span></p></div>
+    </div>
+    <div class="box price">
+      <div class="eyebrow" style="color:var(--accent2)">Colaborador</div>
+      <div class="v">R$ 25<small> ou mais · por ano</small></div>
+      <p>Vale em todos os computadores da igreja. Sem colaboração, o programa continua funcionando, com a marca "versão de teste" nas telas.</p>
+      <a class="btn primary" href="#baixar" style="align-self:flex-start;margin-top:auto">Começar o teste grátis</a>
+    </div>
+  </div>
+</div></section>
+
+<section id="perguntas"><div class="wrap">
+  <div class="sec-head"><div class="eyebrow">Perguntas</div><h2>Antes de baixar</h2></div>
+  <div class="faq">
+    <details><summary>Precisa de internet?</summary><p>Não. O programa funciona sem internet. Com internet, ele só procura versões novas.</p></details>
+    <details><summary>Funciona com qualquer painel de LED?</summary><p>Sim. A processadora de LED enxerga o computador como um monitor: o programa manda a imagem pelo cabo HDMI e cada tela recebe o seu pedaço.</p></details>
+    <details><summary>Quais arquivos de vídeo abrem?</summary><p>MP4 ou MOV em H.264, WebM, imagens PNG e JPG (inclusive com fundo transparente) e áudio MP3 ou WAV.</p></details>
+    <details><summary>E as versões da Bíblia?</summary><p>Vêm três versões de uso livre: Bíblia Livre, Bíblia Livre Textus Receptus e Nova Versão de Acesso Livre. Outras versões podem ser importadas por quem tem o arquivo.</p></details>
+    <details><summary>Perco meus projetos ao atualizar?</summary><p>Não. Projetos, banco de letras e o código de colaborador ficam guardados no computador e continuam depois de cada atualização.</p></details>
+    <details><summary>Posso usar em mais de um computador?</summary><p>Sim. O código de colaborador vale em todos os computadores da igreja.</p></details>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+  <img src="img/logo.png" alt="Motion Church" width="84" height="28">
+  <span>Motion Church, By Seraph · Criado por Sekão Silva · Todos os direitos reservados</span>
+  <a href="https://github.com/sekaosilva/motion-church/releases" style="color:var(--dim)">Todas as versões</a>
+</div></footer>
+
+<script>
+(()=>{
+const AULAS=[
+  {f:'00-visao-geral',n:'Visão geral',t:'O Motion Church em 6 minutos',d:'Um giro pela tela e o caminho completo: montar as telas, colocar vídeos e letras e tocar o culto.',s:367},
+  {f:'01-instalando',n:'Módulo 1',t:'Instalando',d:'Qual arquivo baixar, como instalar no Mac e no Windows e as permissões da primeira vez.',s:250},
+  {f:'02-mapeando',n:'Módulo 2',t:'Mapeando',d:'Do computador ao painel: recortar as telas, importar o mapa da equipe de LED, dizer onde vai a câmera e travar para o evento.',s:407},
+  {f:'03-letras',n:'Módulo 3',t:'Letras de música',d:'Digitar, copiar da internet ou importar letras, e passar as partes com o teclado ou o passador de slides.',s:300},
+  {f:'04-projetos',n:'Módulo 4',t:'Salvar e abrir projetos',d:'Guardar o culto pronto num arquivo e abrir de novo, em outro dia ou outro computador.',s:182},
+  {f:'05-camera',n:'Módulo 5',t:'Sinal de câmera',d:'Câmera ou placa de captura ao vivo, arrastada para a camada e para as telas que você quiser.',s:250},
+  {f:'06-tamanho',n:'Módulo 6',t:'Tamanho do vídeo',d:'Preencher, caber, esticar ou original, e o ajuste de zoom e posição de cada clipe.',s:199},
+  {f:'07-biblia',n:'Módulo 7',t:'Bíblia e roteiro do culto',d:'Versículos digitados como se fala e a ordem do culto montada antes do evento.',s:192},
+  {f:'08-efeitos',n:'Módulo 8',t:'Prévia, tempo, efeitos e avisos',d:'Ver o vídeo antes de ir para o ar, quanto falta, os efeitos do botão direito e o painel de avisos.',s:195}
+];
+const $=s=>document.querySelector(s),mmss=s=>Math.floor(s/60)+':'+String(Math.round(s%60)).padStart(2,'0');
+const grade=$('#grade'),vid=$('#vid');let cur=0;
+grade.innerHTML=AULAS.map((a,i)=>`<button class="ls${i?'':' on'}" data-i="${i}" aria-label="${a.n}: ${a.t}"><div class="th"><img src="img/${a.f}.jpg" alt="" width="640" height="360"><span class="t">${mmss(a.s)}</span><div class="pl"><span><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span></div></div><div class="tx"><small>${a.n}</small><b>${a.t}</b></div></button>`).join('');
+function tocar(i,play){
+  cur=i;const a=AULAS[i];
+  $('#nowN').textContent=a.n;$('#nowT').textContent=a.t;$('#nowD').textContent=a.d;
+  $('#nowDl').href='aulas/'+a.f+'.mp4';$('#nowNext').hidden=i===AULAS.length-1;
+  vid.poster='img/'+a.f+'.jpg';$('#vsrc').src='aulas/'+a.f+'.mp4';vid.load();
+  grade.querySelectorAll('.ls').forEach(b=>b.classList.toggle('on',+b.dataset.i===i));
+  if(play){vid.play().catch(()=>{});$('#aulas').scrollIntoView({behavior:'smooth',block:'start'});}
+}
+grade.addEventListener('click',e=>{const b=e.target.closest('.ls');if(b)tocar(+b.dataset.i,true);});
+$('#nowNext').onclick=()=>{if(cur<AULAS.length-1)tocar(cur+1,true);};
+vid.addEventListener('ended',()=>{if(cur<AULAS.length-1)tocar(cur+1,true);});
+
+// sugere o download certo para o computador de quem está vendo
+const ua=navigator.userAgent,isWin=/Windows/i.test(ua),isMac=/Macintosh|Mac OS X/i.test(ua)&&!/iPhone|iPad/i.test(ua);
+let macArm=null;
+if(isMac){try{const g=document.createElement('canvas').getContext('webgl'),x=g&&g.getExtension('WEBGL_debug_renderer_info'),r=x?g.getParameter(x.UNMASKED_RENDERER_WEBGL):'';if(/Apple M\d|Apple GPU/i.test(r))macArm=true;else if(/Intel|AMD|Radeon/i.test(r))macArm=false;}catch(_){}}
+const pick=isWin?'win':isMac?(macArm===false?'mac-intel':'mac-arm'):null;
+if(pick){
+  const d=document.querySelector(`.d[data-os="${pick}"]`),a=d.querySelector('a');
+  document.querySelectorAll('.d .btn').forEach(b=>{b.classList.remove('primary');b.classList.add('ghost');});
+  a.classList.remove('ghost');a.classList.add('primary');d.classList.add('rec');
+  d.insertAdjacentHTML('afterbegin','<span class="tag">Para este computador</span>');
+  $('#heroBtn').href=a.href;$('#heroTxt').textContent=pick==='win'?'Baixar para Windows':pick==='mac-intel'?'Baixar para Mac (Intel)':'Baixar para Mac';
+  if(pick==='mac-arm'&&macArm===null)$('#heroBtn').href='#baixar';
+}
+// versão e tamanhos da última versão publicada
+fetch('https://api.github.com/repos/sekaosilva/motion-church/releases/latest').then(r=>r.ok?r.json():null).then(j=>{
+  if(!j)return;
+  $('#verTag').innerHTML='<i></i>Versão '+String(j.tag_name||'').replace(/^v/,'');
+  for(const as of j.assets||[]){const el=document.querySelector(`[data-size="${as.name}"]`);if(!el)continue;const mb=Math.round(as.size/1048576);el.textContent=el.textContent.replace(/cerca de \d+ MB/,mb+' MB');}
+}).catch(()=>{});
+})();
+</script>
+</body>
+</html>
