@@ -6,7 +6,7 @@ Programa para **mapeamento de painéis de LED e cultos**: clipes, letras de mús
 
 ## Baixar
 
-**Site com os downloads e as videoaulas: https://sekaosilva.github.io/motion-church/**
+**Site com os downloads e as videoaulas: https://www.motionchurch.com.br**
 
 | Computador | Arquivo |
 |---|---|
