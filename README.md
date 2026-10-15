@@ -2,7 +2,7 @@
 
 # Motion Church
 
-Programa para **mapeamento de painéis de LED e cultos**: clipes, letras de música, Bíblia, câmera ao vivo, efeitos e avisos, tudo saindo pronto para as telas do palco. Funciona sem internet.
+Programa para **painéis de LED e projetores no culto**: mapeamento, blend e ajuste de projetores, clipes, letras de música, Bíblia, câmera ao vivo, efeitos e avisos, tudo saindo pronto para as telas do palco. Funciona sem internet.
 
 ## Baixar
 
