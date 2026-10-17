@@ -169,7 +169,52 @@ footer img{height:28px;width:auto;opacity:.9}
   .nav .btn{display:none}
   .hero{padding-top:44px}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* ===== acabamento no estilo Apple (skill apple-design) ===== */
+:root{--spring:cubic-bezier(.2,.9,.25,1);--spring-b:cubic-bezier(.34,1.4,.64,1)}
+/* tipografia: espaçamento por tamanho e entrelinha inversa */
+.hero h1{line-height:1.02;letter-spacing:-.025em}
+h2{letter-spacing:-.02em;line-height:1.05}
+h3{letter-spacing:-.01em}
+.lead{line-height:1.6}
+.f p,.d .sub,details p,.now p{line-height:1.6}
+.eyebrow{letter-spacing:.16em}
+/* resposta imediata no toque (no aperto, não no soltar) */
+.btn{transition:transform .35s var(--spring-b),background .2s,border-color .2s,box-shadow .25s}
+.btn:active{transform:scale(.96);transition:transform .08s ease-out}
+.ls{transition:border-color .2s,transform .4s var(--spring-b),box-shadow .3s}
+.ls:hover{transform:translateY(-4px)}
+.ls:active{transform:scale(.97);transition:transform .08s ease-out}
+.ls .th img{transition:transform .6s var(--spring),opacity .3s}
+.ls:hover .th img{transform:scale(1.05);opacity:1}
+.f{transition:transform .45s var(--spring-b),border-color .25s,box-shadow .3s}
+.f:hover{transform:translateY(-5px);border-color:var(--line2);box-shadow:0 22px 50px -24px rgba(30,155,255,.55)}
+.f .ic{transition:transform .45s var(--spring-b)}
+.f:hover .ic{transform:scale(1.1) rotate(-4deg)}
+.d{transition:transform .45s var(--spring-b),box-shadow .3s}
+.d:hover{transform:translateY(-4px)}
+summary{transition:color .2s}
+summary:active{transform:scale(.99)}
+details{transition:border-color .2s,background .2s}
+details[open]{border-color:var(--line2);background:var(--card2)}
+details[open] p{animation:abre .35s var(--spring)}
+@keyframes abre{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.nav nav a{transition:color .2s}
+/* topo como material translúcido: borda clara em cima, desfoque com saturação, sem linha dura */
+.nav{background:rgba(6,10,20,.62);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-bottom:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.nav::after{content:"";position:absolute;left:0;right:0;top:100%;height:18px;background:linear-gradient(rgba(6,10,20,.45),transparent);pointer-events:none;opacity:0;transition:opacity .3s}
+.nav.rolou::after{opacity:1}
+/* entrada das seções: o conteúdo "materializa" (desfoque + leve subida) */
+.js .rv{opacity:0;transform:translateY(26px) scale(.985);filter:blur(6px);transition:opacity .7s var(--spring),transform .9s var(--spring),filter .7s var(--spring)}
+.js .rv.in{opacity:1;transform:none;filter:none}
+@media (prefers-reduced-motion:reduce){
+  .js .rv{transform:none;filter:none;transition:opacity .3s ease}
+  .btn:active,.ls:active,.ls:hover,.f:hover,.d:hover{transform:none}
+  details[open] p{animation:none}
+}
+@media (prefers-reduced-transparency:reduce){.nav{background:#060a14;backdrop-filter:none;-webkit-backdrop-filter:none}}
+@media (prefers-contrast:more){.f,.d,.st,.box,details,.ls{border-color:#5f7ea8}.lead,.f p{color:#cfdbec}}
 </style>
 </head>
 <body>
@@ -340,6 +385,18 @@ fetch('https://api.github.com/repos/sekaosilva/motion-church/releases/latest').t
   $('#verTag').innerHTML='<i></i>Versão '+String(j.tag_name||'').replace(/^v/,'');
   for(const as of j.assets||[]){const el=document.querySelector(`[data-size="${as.name}"]`);if(!el)continue;const mb=Math.round(as.size/1048576);el.textContent=el.textContent.replace(/cerca de \d+ MB/,mb+' MB');}
 }).catch(()=>{});
+})();
+
+// entrada suave das seções e sombra do topo ao rolar
+(function(){
+  document.documentElement.classList.add('js');
+  var alvos=document.querySelectorAll('.sec-head,.f,.d,.st,.player,.ls,.box,details,.hero-top,.shot');
+  alvos.forEach(function(e){e.classList.add('rv')});
+  if(!('IntersectionObserver' in window)){alvos.forEach(function(e){e.classList.add('in')});return;}
+  var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){var e=x.target,irm=e.parentElement?[].indexOf.call(e.parentElement.children,e):0;e.style.transitionDelay=Math.min(irm,6)*60+'ms';e.classList.add('in');io.unobserve(e);setTimeout(function(){e.style.transitionDelay=''},1300);}})},{rootMargin:'0px 0px -8% 0px',threshold:.08});
+  alvos.forEach(function(e){io.observe(e)});
+  var nav=document.querySelector('.nav');
+  var f=function(){nav.classList.toggle('rolou',scrollY>8)};addEventListener('scroll',f,{passive:true});f();
 })();
 </script>
 </body>
