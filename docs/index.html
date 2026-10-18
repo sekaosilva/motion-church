@@ -206,7 +206,9 @@ details[open] p{animation:abre .35s var(--spring)}
 .nav::after{content:"";position:absolute;left:0;right:0;top:100%;height:18px;background:linear-gradient(rgba(6,10,20,.45),transparent);pointer-events:none;opacity:0;transition:opacity .3s}
 .nav.rolou::after{opacity:1}
 /* entrada das seções: o conteúdo "materializa" (desfoque + leve subida) */
-.js .rv{opacity:0;transform:translateY(26px) scale(.985);filter:blur(6px);transition:opacity .7s var(--spring),transform .9s var(--spring),filter .7s var(--spring)}
+.js .rv{opacity:0;transform:translateY(14px);transition:opacity .45s ease-out,transform .6s var(--spring)}
+.js .shot.rv,.js .pg .pic.rv{transform:translateY(18px) scale(.985);filter:blur(5px);transition:opacity .55s ease-out,transform .8s var(--spring),filter .55s ease-out}
+.js .shot.rv.in,.js .pg .pic.rv.in{opacity:1;transform:none;filter:none}
 .js .rv.in{opacity:1;transform:none;filter:none}
 @media (prefers-reduced-motion:reduce){
   .js .rv{transform:none;filter:none;transition:opacity .3s ease}
@@ -215,13 +217,42 @@ details[open] p{animation:abre .35s var(--spring)}
 }
 @media (prefers-reduced-transparency:reduce){.nav{background:#060a14;backdrop-filter:none;-webkit-backdrop-filter:none}}
 @media (prefers-contrast:more){.f,.d,.st,.box,details,.ls{border-color:#5f7ea8}.lead,.f p{color:#cfdbec}}
+
+/* ===== 2.9.1 (skill apple-design) ===== */
+section[id]{scroll-margin-top:66px}
+/* tipografia: títulos equilibrados, parágrafos sem viúva, números alinhados */
+h1,h2,h3{text-wrap:balance}p,li,.lead{text-wrap:pretty}
+.hero h1{letter-spacing:-.02em;line-height:1.02}h2{letter-spacing:-.015em}
+.price,.t,time,.size{font-variant-numeric:tabular-nums}
+/* onde estou: o link da seção visível fica aceso, com um traço que desliza */
+.nav nav a{position:relative;padding:6px 0}
+.nav nav a::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;border-radius:2px;background:var(--accent);box-shadow:0 0 10px var(--accent);transform:scaleX(0);transform-origin:center;transition:transform .45s var(--spring)}
+.nav nav a.on{color:var(--fg)}.nav nav a.on::after{transform:scaleX(1)}
+/* como funciona: duas páginas, com a troca entre elas no meio */
+.pages{display:grid;grid-template-columns:1fr auto 1fr;grid-template-rows:auto auto;column-gap:22px;row-gap:16px}
+.pg{display:grid;grid-row:span 2;grid-template-rows:subgrid;row-gap:16px}
+.pg .tx{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.ponte{grid-row:1;grid-column:2;align-self:center}
+.pg .pic{border-radius:14px;overflow:hidden;border:1px solid var(--line2);background:#0a0c11;box-shadow:0 30px 70px -30px rgba(0,0,0,.9)}
+.pg .pic img{width:100%;aspect-ratio:16/10;object-fit:cover}
+.pg .k{display:inline-flex;align-items:center;gap:10px;font:italic 700 13px/1 'Exo 2',Manrope,sans-serif;letter-spacing:.14em;text-transform:uppercase}
+.pg .k b{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;font-style:normal;letter-spacing:0;font-size:13px}
+.pg.m .k{color:var(--accent2)}.pg.m .k b{background:rgba(30,155,255,.15);box-shadow:inset 0 0 0 1px var(--accent)}
+.pg.e .k{color:#ff8a7a}.pg.e .k b{background:rgba(255,91,74,.14);box-shadow:inset 0 0 0 1px #ff5b4a}
+.pg h3{font-size:22px}.pg p{margin:0;color:var(--dim);font-size:15.5px}
+.pg ul{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.pg li{font-size:13px;font-weight:600;color:var(--dim);border:1px solid var(--line);background:var(--card);border-radius:999px;padding:5px 11px}
+.ponte{display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--faint);font-size:12.5px;font-weight:700;text-align:center;max-width:120px}
+.ponte .lk{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;background:linear-gradient(180deg,#38b2ff,#0f78f0);color:#fff;box-shadow:0 6px 24px -6px rgba(30,155,255,.85),inset 0 1px 0 rgba(255,255,255,.35)}
+@media (max-width:900px){.pages{grid-template-columns:1fr;grid-template-rows:none}.pg{display:flex;flex-direction:column;grid-row:auto}.ponte{grid-row:auto;grid-column:auto;flex-direction:row;max-width:none;justify-content:center}.ponte .seta{transform:rotate(90deg)}}
+@media (prefers-reduced-motion:reduce){.nav nav a::after{transition:none}.js .shot.rv,.js .pg .pic.rv{transform:none;filter:none}}
 </style>
 </head>
 <body>
 
 <header class="nav"><div class="wrap">
   <a href="#topo" aria-label="Motion Church, início"><img src="img/logo.png" alt="Motion Church" width="102" height="34"></a>
-  <nav aria-label="Seções"><a href="#recursos">Recursos</a><a href="#baixar">Baixar</a><a href="#aulas">Aulas</a><a href="#colaborar">Colaborar</a><a href="#perguntas">Perguntas</a></nav>
+  <nav aria-label="Seções"><a href="#como">Como funciona</a><a href="#recursos">Recursos</a><a href="#baixar">Baixar</a><a href="#aulas">Aulas</a><a href="#colaborar">Colaborar</a><a href="#perguntas">Perguntas</a></nav>
   <a class="btn primary sm" href="#baixar">Baixar grátis</a>
 </div></header>
 
@@ -238,9 +269,22 @@ details[open] p{animation:abre .35s var(--spring)}
         <a class="btn primary dlb" id="heroWin" href="https://github.com/sekaosilva/motion-church/releases/latest/download/MotionChurch-Windows.exe"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.5 10 4.5v7H3zM11 4.3 21 3v8.5H11zM3 12.5h7v7L3 18.5zM11 12.5h10V21l-10-1.4z"/></svg><span><b>Baixar para Windows</b><small>Windows 10 ou 11</small></span></a>
       </div>
       <p class="alt">Mac com processador Intel? <a href="https://github.com/sekaosilva/motion-church/releases/latest/download/MotionChurch-Mac-Intel.zip">Baixe aqui</a> · <a href="#aulas">Ver as videoaulas</a></p>
-      <div class="meta"><span><i></i>15 dias grátis</span><span><i></i>LED e projetores</span><span><i></i>Mac e Windows</span><span><i></i>Funciona sem internet</span><span id="verTag"><i></i>Versão 2.5</span></div>
+      <div class="meta"><span><i></i>15 dias grátis</span><span><i></i>LED e projetores</span><span><i></i>Mac e Windows</span><span><i></i>Funciona sem internet</span><span id="verTag"><i></i>Versão 2.9</span></div>
     </div>
     <div class="shot"><div class="bar"><i></i><i></i><i></i></div><img src="img/tela-evento.jpg" alt="Tela do Motion Church no Evento: o palco com as telas, a letra da música no ar e a grade de clipes" width="1600" height="1000"></div>
+  </div>
+</div></section>
+
+<section id="como" style="padding-top:56px;padding-bottom:40px"><div class="wrap">
+  <div class="sec-head"><div class="eyebrow">Como funciona</div><h2>Monte uma vez. No culto, é só clicar.</h2><p class="lead">O programa tem duas páginas separadas, para nada se misturar: a técnica fica guardada no Mapeamento, e o Evento tem só o que se usa no culto.</p></div>
+  <div class="pages">
+    <div class="pg m"><div class="pic"><img src="img/tela-mapeamento.jpg" alt="Página do Mapeamento: a Entrada e a Saída com quatro telas recortadas, e a lista de slices" width="1600" height="1000" loading="lazy"></div>
+      <div class="tx"><div class="k"><b>1</b>Mapeamento</div><h3>As telas, uma vez por palco</h3><p>Recorte o vídeo para cada tela de LED, junte projetores e acerte a imagem torta. Depois é só travar.</p>
+      <ul><li>Slices</li><li>Painel de LED</li><li>Blend de projetores</li><li>Keystone</li></ul></div></div>
+    <div class="ponte" aria-hidden="true"><span class="lk"><svg viewBox="0 0 16 16" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg></span><span class="seta">→</span>Travar e ir para o evento</div>
+    <div class="pg e"><div class="pic"><img src="img/tela-evento.jpg" alt="Página do Evento: o palco com a letra no ar, a grade de clipes, os arquivos e os botões Letras e Bíblia" width="1600" height="1000" loading="lazy"></div>
+      <div class="tx"><div class="k"><b>2</b>Evento</div><h3>O culto, um clique por vez</h3><p>A grade com os clipes, os arquivos, as letras, a Bíblia, os avisos e a câmera. Ninguém desmonta as telas sem querer.</p>
+      <ul><li>Grade de clipes</li><li>Letras</li><li>Bíblia</li><li>Avisos</li><li>Câmera ao vivo</li></ul></div></div>
   </div>
 </div></section>
 
@@ -391,13 +435,17 @@ fetch('https://api.github.com/repos/sekaosilva/motion-church/releases/latest').t
 // entrada suave das seções e sombra do topo ao rolar
 (function(){
   document.documentElement.classList.add('js');
-  var alvos=document.querySelectorAll('.sec-head,.f,.d,.st,.player,.ls,.box,details,.hero-top,.shot');
+  var alvos=document.querySelectorAll('.sec-head,.f,.d,.st,.player,.ls,.box,details,.hero-top,.shot,.pg .pic,.ponte');
   alvos.forEach(function(e){e.classList.add('rv')});
   if(!('IntersectionObserver' in window)){alvos.forEach(function(e){e.classList.add('in')});return;}
-  var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){var e=x.target,irm=e.parentElement?[].indexOf.call(e.parentElement.children,e):0;e.style.transitionDelay=Math.min(irm,6)*60+'ms';e.classList.add('in');io.unobserve(e);setTimeout(function(){e.style.transitionDelay=''},1300);}})},{rootMargin:'0px 0px -8% 0px',threshold:.08});
+  var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){var e=x.target,irm=e.parentElement?[].indexOf.call(e.parentElement.children,e):0;e.style.transitionDelay=Math.min(irm,6)*60+'ms';e.classList.add('in');io.unobserve(e);setTimeout(function(){e.style.transitionDelay=''},1300);}})},{rootMargin:'0px 0px -4% 0px',threshold:0});
   alvos.forEach(function(e){io.observe(e)});
   var nav=document.querySelector('.nav');
   var f=function(){nav.classList.toggle('rolou',scrollY>8)};addEventListener('scroll',f,{passive:true});f();
+  // o link da seção que está na tela fica aceso
+  var links={};[].forEach.call(nav.querySelectorAll('nav a'),function(a){links[a.getAttribute('href').slice(1)]=a});
+  var spy=new IntersectionObserver(function(es){es.forEach(function(x){var a=links[x.target.id];if(!a)return;if(x.isIntersecting){for(var k in links){links[k].classList.remove('on');links[k].removeAttribute('aria-current')}a.classList.add('on');a.setAttribute('aria-current','true')}else a.classList.remove('on')})},{rootMargin:'-45% 0px -50% 0px'});
+  Object.keys(links).forEach(function(id){var e=document.getElementById(id);if(e)spy.observe(e)});
 })();
 </script>
 </body>
