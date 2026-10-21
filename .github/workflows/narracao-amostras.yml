@@ -16,6 +16,7 @@ jobs:
           sudo apt-get update -qq && sudo apt-get install -y -qq espeak-ng ffmpeg >/dev/null
           pip install -q "kokoro>=0.9" soundfile piper-tts
       - name: Kokoro (mulher e homem)
+        continue-on-error: true
         run: |
           mkdir -p saida
           python - <<'PY'
@@ -28,7 +29,9 @@ jobs:
               sf.write(f'saida/{nome}.wav', np.concatenate(partes), 24000)
           PY
       - name: Piper (homem)
+        continue-on-error: true
         run: |
+          mkdir -p saida
           curl -sSL -o faber.onnx https://huggingface.co/rhasspy/piper-voices/resolve/main/pt/pt_BR/faber/medium/pt_BR-faber-medium.onnx
           curl -sSL -o faber.onnx.json https://huggingface.co/rhasspy/piper-voices/resolve/main/pt/pt_BR/faber/medium/pt_BR-faber-medium.onnx.json
           piper -m faber.onnx -f saida/piper-homem.wav < narracao/amostra.txt
