@@ -1,0 +1,1 @@
+Clique com o botão direito no clipe. Aparece o menu do clipe. Escolha Renomear clipe, escreva o nome e aperte Enter. O clipe ganha o nome que você escolheu, e o arquivo continua com o nome dele na lista de arquivos.
