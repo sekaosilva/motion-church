@@ -29,7 +29,7 @@ Não sabe qual é o seu Mac? Menu  → Sobre Este Mac: se aparecer "Chip Apple M
 
 ## Teste grátis e colaboração
 
-Você pode usar tudo por **15 dias**. Depois, seja um colaborador com o valor que o seu coração mandar, **a partir de R$ 49,90 por ano**: a colaboração garante o uso do programa por um ano em um computador. O Pix e o pagamento com cartão estão dentro do próprio programa, no aviso "Teste grátis" ou "Seja colaborador", lá em cima.
+Você pode usar tudo por **15 dias**. Depois, seja um colaborador com o valor que o seu coração mandar, **a partir de R$ 89,90 por ano**: a colaboração garante o uso do programa por um ano em um computador. O Pix e o pagamento com cartão estão dentro do próprio programa, no aviso "Teste grátis" ou "Seja colaborador", lá em cima.
 
 ## Atualizações
 
