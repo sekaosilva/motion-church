@@ -80,7 +80,7 @@ async function criar(req, env) {
   const maq = b.maq.trim().toUpperCase().replace(/^(.{4})-?(.{4})$/, '$1-$2');
   const nome = String(b.nome || '').replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, 60);
   const origem = (env.ORIGEM || new URL(req.url).origin).replace(/\/$/, '');
-  const pref = await mp(env, '/checkout/preferences', { method: 'POST', body: JSON.stringify({
+  const pref = await mp(env, '/checkout/preferences', { method: 'POST', headers: { 'x-idempotency-key': id }, body: JSON.stringify({
     items: [{ id: 'colaboracao', title: 'Colaboração Motion Church (1 ano)', description: 'Uso do Motion Church por um ano no computador ' + maq, quantity: 1, currency_id: 'BRL', unit_price: valor }],
     external_reference: id, notification_url: origem + '/mp',
     back_urls: { success: origem + '/obrigado?p=' + id, pending: origem + '/obrigado?p=' + id, failure: origem + '/obrigado?p=' + id }, auto_return: 'approved',
@@ -99,10 +99,25 @@ async function consulta(env, id) {
   return json(ped.codigo ? { status: 'pago', codigo: ped.codigo, ate: ped.ate } : { status: ped.status || 'aguardando' });
 }
 
+// aviso assinado pelo Mercado Pago (x-signature, HMAC-SHA256), quando a chave secreta dos avisos estiver configurada.
+// Mesmo sem ela, nada é liberado pelo que vem no aviso: o pagamento é sempre consultado de novo no Mercado Pago.
+async function assinaturaOk(req, env, dataId) {
+  if (!env.MP_WEBHOOK_SECRET) return true;
+  const sig = req.headers.get('x-signature') || '', rid = req.headers.get('x-request-id') || '';
+  const partes = Object.fromEntries(sig.split(',').map(x => x.trim().split('=')).filter(x => x.length === 2));
+  if (!partes.ts || !partes.v1) return false;
+  const manifesto = `id:${String(dataId).toLowerCase()};request-id:${rid};ts:${partes.ts};`;
+  const key = await crypto.subtle.importKey('raw', enc.encode(env.MP_WEBHOOK_SECRET), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  const h = [...new Uint8Array(await crypto.subtle.sign('HMAC', key, enc.encode(manifesto)))].map(x => x.toString(16).padStart(2, '0')).join('');
+  if (h.length !== partes.v1.length) return false;
+  let d = 0; for (let i = 0; i < h.length; i++) d |= h.charCodeAt(i) ^ partes.v1.charCodeAt(i);
+  return d === 0;
+}
 async function aviso(req, env) {
   const u = new URL(req.url); let b = {}; try { b = await req.json(); } catch (_) {}
-  const pid = (b && b.data && b.data.id) || u.searchParams.get('data.id') || (u.searchParams.get('topic') === 'payment' && u.searchParams.get('id'));
+  const pid = u.searchParams.get('data.id') || (b && b.data && b.data.id) || (u.searchParams.get('topic') === 'payment' && u.searchParams.get('id'));
   if (!pid || !/^\d{1,20}$/.test(String(pid))) return new Response('ok');
+  if (!(await assinaturaOk(req, env, pid))) return new Response('assinatura', { status: 401 });
   try {
     const p = await mp(env, '/v1/payments/' + pid), id = String(p.external_reference || '');
     const t = /^[0-9a-f]{24}$/.test(id) && await env.PEDIDOS.get('ped:' + id);

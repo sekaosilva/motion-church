@@ -57,6 +57,8 @@ jobs:
           EOF
           npx --yes wrangler@4 deploy
           printf '%s' "${{ secrets.MP_TOKEN }}" | npx --yes wrangler@4 secret put MP_TOKEN
+          # opcional: chave secreta dos avisos (Mercado Pago › aplicação › Webhooks), para conferir a assinatura x-signature
+          if [ -n "${{ secrets.MP_WEBHOOK_SECRET }}" ]; then printf '%s' "${{ secrets.MP_WEBHOOK_SECRET }}" | npx --yes wrangler@4 secret put MP_WEBHOOK_SECRET; fi
       - name: Chave dos códigos
         run: |
           cd pagamento
