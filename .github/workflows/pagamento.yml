@@ -31,8 +31,20 @@ jobs:
       - name: Conta, subdomínio e banco de pedidos
         run: |
           api() { curl -sS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H "Content-Type: application/json" "$@"; }
-          ACC=$(api https://api.cloudflare.com/client/v4/accounts | jq -r '.result[0].id')
-          [ -n "$ACC" ] && [ "$ACC" != null ] || { echo "::error::O token da Cloudflare não abriu nenhuma conta"; exit 1; }
+          V=$(api https://api.cloudflare.com/client/v4/user/tokens/verify)
+          echo "::notice::Token da Cloudflare: $(echo "$V" | jq -c '{ok: .success, status: .result.status, erros: [.errors[]?.message]}')"
+          ACC="${{ secrets.CLOUDFLARE_ACCOUNT_ID }}"
+          if [ -z "$ACC" ]; then
+            A=$(api "https://api.cloudflare.com/client/v4/accounts?per_page=50")
+            echo "::notice::Contas: $(echo "$A" | jq -c '{ok: .success, n: (.result|length), erros: [.errors[]?.message]}')"
+            ACC=$(echo "$A" | jq -r '.result[0].id // empty')
+          fi
+          if [ -z "$ACC" ]; then
+            M=$(api "https://api.cloudflare.com/client/v4/memberships")
+            echo "::notice::Membros: $(echo "$M" | jq -c '{ok: .success, n: (.result|length), erros: [.errors[]?.message]}')"
+            ACC=$(echo "$M" | jq -r '.result[0].account.id // empty')
+          fi
+          [ -n "$ACC" ] || { echo "::error::O token da Cloudflare não abriu nenhuma conta (confira se ele foi criado com o modelo Editar Cloudflare Workers e se a sua conta está marcada em Recursos da conta)"; exit 1; }
           SUB=$(api https://api.cloudflare.com/client/v4/accounts/$ACC/workers/subdomain | jq -r '.result.subdomain // empty')
           if [ -z "$SUB" ]; then SUB=motionchurch; api -X PUT https://api.cloudflare.com/client/v4/accounts/$ACC/workers/subdomain -d "{\"subdomain\":\"$SUB\"}" | jq -c '.success,.errors'; fi
           KV=$(api "https://api.cloudflare.com/client/v4/accounts/$ACC/storage/kv/namespaces?per_page=100" | jq -r '.result[] | select(.title=="motion-church-pedidos") | .id' | head -1)
