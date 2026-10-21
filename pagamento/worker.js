@@ -11,6 +11,9 @@
 //   GET  /pedido/<id>   → {status: aguardando | pago | recusado, codigo?, ate?}  (confere no Mercado Pago a cada consulta)
 //   POST /mp            aviso do Mercado Pago (pagamento aprovado) → gera o código na hora
 //   GET  /obrigado?p=<id>  página de volta do pagamento
+//   POST /ajuda         {p, ctx, v} → {r}  ajuda com IA (ajuda.js; binding AI do Workers AI)
+
+import { ajuda } from './ajuda.js';
 
 const B32 = '0123456789ABCDEFGHJKMNPQRSTVWXYZ', BASE_DIA = Date.UTC(2024, 0, 1), DIA = 86400000, DIAS = 365;
 const enc = new TextEncoder();
@@ -144,6 +147,7 @@ export default {
     try {
       if (req.method === 'POST' && p === '/pedido') return await criar(req, env);
       if (req.method === 'GET' && p.startsWith('/pedido/')) return await consulta(env, p.slice(8));
+      if (req.method === 'POST' && p === '/ajuda') return await ajuda(req, env, json);
       if (p === '/mp') return await aviso(req, env);
       if (req.method === 'GET' && p === '/obrigado') return await obrigado(env, u.searchParams.get('p'));
       if (p === '/') return new Response('Motion Church · pagamento automático', { headers: { 'content-type': 'text/plain; charset=utf-8' } });

@@ -76,7 +76,10 @@ jobs:
           binding = "PEDIDOS"
           id = "$KV"
           EOF
-          npx --yes wrangler@4 deploy
+          # ajuda com IA (Workers AI, cota grátis): se a conta ou o token não deixarem, publica sem ela e o programa usa só a ajuda local
+          cp wrangler.toml sem-ia.toml; printf '[ai]\nbinding = "AI"\n' >> wrangler.toml
+          if npx --yes wrangler@4 deploy; then echo "IA=sim" >> $GITHUB_ENV; else echo "::warning::publicado sem a ajuda com IA"; cp sem-ia.toml wrangler.toml; npx --yes wrangler@4 deploy; echo "IA=não" >> $GITHUB_ENV; fi
+          rm -f sem-ia.toml
           printf '%s' "${{ secrets.MP_TOKEN }}" | npx --yes wrangler@4 secret put MP_TOKEN
           # opcional: chave secreta dos avisos (Mercado Pago › aplicação › Webhooks), para conferir a assinatura x-signature
           if [ -n "${{ secrets.MP_WEBHOOK_SECRET }}" ]; then printf '%s' "${{ secrets.MP_WEBHOOK_SECRET }}" | npx --yes wrangler@4 secret put MP_WEBHOOK_SECRET; fi
@@ -101,10 +104,13 @@ jobs:
           URL=$(echo "$R" | jq -r '.url // empty')
           case "$URL" in https://www.mercadopago.com.br/*|https://mercadopago.com.br/*) OK=ok ;; *) OK="falhou: $(echo "$R" | jq -r '.erro // "sem resposta"')" ;; esac
           echo "TESTE=$OK" >> $GITHUB_ENV
+          A=$(curl -sS -m 60 -X POST "$ORIGEM/ajuda" -H 'content-type: application/json' -d '{"p":"Como coloco um vídeo no ar?","ctx":["Tocar. Adicione os vídeos e arraste cada um para a grade de clipes. Clique no clipe para colocar no ar."]}' 2>/dev/null || true)
+          echo "ajuda: $(echo "$A" | head -c 400)"
+          if echo "$A" | jq -e '.r' >/dev/null 2>&1; then echo "AJUDA=ok" >> $GITHUB_ENV; else echo "AJUDA=falhou" >> $GITHUB_ENV; fi
       - name: Gravar o endereço e a chave pública
         run: |
           cd pagamento
-          jq -n --arg u "$ORIGEM" --arg p "$PUB" --arg t "$TESTE" --arg d "$(date -u +%FT%TZ)" '{servico:$u, chavePublica:$p, testeMercadoPago:$t, publicadoEm:$d}' > estado.json
+          jq -n --arg u "$ORIGEM" --arg p "$PUB" --arg t "$TESTE" --arg d "$(date -u +%FT%TZ)" --arg a "${AJUDA:-?} (IA ${IA:-?})" '{servico:$u, chavePublica:$p, testeMercadoPago:$t, ajudaIA:$a, publicadoEm:$d}' > estado.json
           rm -f wrangler.toml
           cat estado.json
           git config user.name "github-actions"; git config user.email "github-actions@users.noreply.github.com"
