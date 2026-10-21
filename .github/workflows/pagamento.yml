@@ -95,8 +95,8 @@ jobs:
           echo "PUB=$PUB" >> $GITHUB_ENV
       - name: Conferir que o serviço fala com o Mercado Pago
         run: |
-          sleep 8
-          R=$(curl -sS -X POST "$ORIGEM/pedido" -H 'content-type: application/json' -d '{"maq":"AB12-CD34","valor":89.9,"nome":"Teste da publicação"}')
+          # endereço novo na Cloudflare pode levar alguns minutos para responder (certificado do subdomínio)
+          R=""; for i in $(seq 1 40); do R=$(curl -sS -m 20 -X POST "$ORIGEM/pedido" -H 'content-type: application/json' -d '{"maq":"AB12-CD34","valor":89.9,"nome":"Teste da publicação"}' 2>/dev/null) && [ -n "$R" ] && break; sleep 15; done
           echo "$R" | jq -c '{id: .id, url: (.url // "" | .[0:60]), erro: .erro}'
           URL=$(echo "$R" | jq -r '.url // empty')
           case "$URL" in https://www.mercadopago.com.br/*|https://mercadopago.com.br/*) OK=ok ;; *) OK="falhou: $(echo "$R" | jq -r '.erro // "sem resposta"')" ;; esac
