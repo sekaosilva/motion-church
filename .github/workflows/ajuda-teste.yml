@@ -1,0 +1,25 @@
+# Faz as perguntas de pagamento/teste/perguntas.json à ajuda com IA publicada e guarda as respostas (para conferir a qualidade).
+name: ajuda-teste
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  perguntar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Perguntar
+        run: |
+          U=$(jq -r .servico pagamento/estado.json)
+          echo '[]' > /tmp/r.json
+          n=$(jq length pagamento/teste/perguntas.json)
+          for i in $(seq 0 $((n-1))); do
+            B=$(jq -c ".[$i]" pagamento/teste/perguntas.json)
+            T0=$(date +%s.%N); R=$(curl -sS -m 60 -X POST "$U/ajuda" -H 'content-type: application/json' -d "$B" || echo '{"erro":"curl"}'); T1=$(date +%s.%N)
+            jq --argjson b "$B" --argjson r "$R" --arg s "$(echo "$T1 - $T0" | bc)" '. + [{p: $b.p, r: ($r.r // $r.erro), s: $s}]' /tmp/r.json > /tmp/r2.json && mv /tmp/r2.json /tmp/r.json
+            sleep 2
+          done
+          cp /tmp/r.json pagamento/teste/respostas.json
+          git config user.name github-actions && git config user.email github-actions@users.noreply.github.com
+          git add pagamento/teste/respostas.json && git commit -m "Ajuda com IA: respostas de teste" || true
+          git pull --rebase && git push
