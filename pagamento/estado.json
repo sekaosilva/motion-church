@@ -2,5 +2,6 @@
   "servico": "https://motion-church-pagamento.motionchurch.workers.dev",
   "chavePublica": "c152a4942242e4de2b53ec74eef6a9e7b46e848db2af8dd4d7d958dc023d0a9b",
   "testeMercadoPago": "ok",
-  "publicadoEm": "2026-10-21T20:25:08Z"
+  "ajudaIA": "ok (IA sim)",
+  "publicadoEm": "2026-10-21T22:47:04Z"
 }
