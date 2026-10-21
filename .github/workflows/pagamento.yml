@@ -28,6 +28,8 @@ jobs:
         run: |
           [ -n "$CLOUDFLARE_API_TOKEN" ] || { echo "::error::Falta o segredo CLOUDFLARE_API_TOKEN"; exit 1; }
           [ -n "${{ secrets.MP_TOKEN }}" ] || { echo "::error::Falta o segredo MP_TOKEN"; exit 1; }
+          M="${{ secrets.MP_TOKEN }}"; M=$(printf '%s' "$M" | tr -d ' \r\n\t')
+          case "$M" in APP_USR-*) echo "::notice::Token do Mercado Pago: começa com APP_USR- e tem ${#M} caracteres (certo)";; TEST-*) echo "::error::O MP_TOKEN guardado é de TESTE (começa com TEST-): use o Access Token de PRODUÇÃO, que começa com APP_USR-";; *) echo "::error::O MP_TOKEN guardado não parece um Access Token do Mercado Pago (deveria começar com APP_USR-; tem ${#M} caracteres)";; esac
       - name: Limpar o token (espaços, quebra de linha ou o comando de teste colado junto)
         run: |
           T=$(printf '%s' "$CLOUDFLARE_API_TOKEN" | grep -oE '[A-Za-z0-9_-]{40,}' | grep -v '^https' | head -1)
