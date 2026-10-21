@@ -1,0 +1,90 @@
+# Publica o serviço de pagamento automático da colaboração (pagamento/worker.js) na Cloudflare.
+# Segredos do repositório: CLOUDFLARE_API_TOKEN (modelo "Editar Cloudflare Workers") e MP_TOKEN (Access Token de produção do Mercado Pago).
+# A chave que assina os códigos de colaborador é criada aqui, vai direto para o segredo do serviço e não fica em lugar nenhum;
+# só a parte pública é gravada em pagamento/estado.json, para o programa conferir os códigos.
+name: pagamento
+on:
+  workflow_dispatch:
+    inputs:
+      nova_chave:
+        description: "Criar uma chave nova para os códigos (só se a antiga vazou)"
+        type: boolean
+        default: false
+permissions:
+  contents: write
+concurrency: pagamento
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      NOME: motion-church-pagamento
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Conferir os segredos
+        run: |
+          [ -n "$CLOUDFLARE_API_TOKEN" ] || { echo "::error::Falta o segredo CLOUDFLARE_API_TOKEN"; exit 1; }
+          [ -n "${{ secrets.MP_TOKEN }}" ] || { echo "::error::Falta o segredo MP_TOKEN"; exit 1; }
+      - name: Conta, subdomínio e banco de pedidos
+        run: |
+          api() { curl -sS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H "Content-Type: application/json" "$@"; }
+          ACC=$(api https://api.cloudflare.com/client/v4/accounts | jq -r '.result[0].id')
+          [ -n "$ACC" ] && [ "$ACC" != null ] || { echo "::error::O token da Cloudflare não abriu nenhuma conta"; exit 1; }
+          SUB=$(api https://api.cloudflare.com/client/v4/accounts/$ACC/workers/subdomain | jq -r '.result.subdomain // empty')
+          if [ -z "$SUB" ]; then SUB=motionchurch; api -X PUT https://api.cloudflare.com/client/v4/accounts/$ACC/workers/subdomain -d "{\"subdomain\":\"$SUB\"}" | jq -c '.success,.errors'; fi
+          KV=$(api "https://api.cloudflare.com/client/v4/accounts/$ACC/storage/kv/namespaces?per_page=100" | jq -r '.result[] | select(.title=="motion-church-pedidos") | .id' | head -1)
+          if [ -z "$KV" ]; then KV=$(api -X POST https://api.cloudflare.com/client/v4/accounts/$ACC/storage/kv/namespaces -d '{"title":"motion-church-pedidos"}' | jq -r '.result.id'); fi
+          echo "ACC=$ACC" >> $GITHUB_ENV; echo "SUB=$SUB" >> $GITHUB_ENV; echo "KV=$KV" >> $GITHUB_ENV
+          echo "ORIGEM=https://$NOME.$SUB.workers.dev" >> $GITHUB_ENV
+      - name: Publicar o serviço
+        run: |
+          cd pagamento
+          cat > wrangler.toml <<EOF
+          name = "$NOME"
+          main = "worker.js"
+          compatibility_date = "2026-06-01"
+          account_id = "$ACC"
+          workers_dev = true
+          [vars]
+          ORIGEM = "$ORIGEM"
+          MINIMO = "89.90"
+          [[kv_namespaces]]
+          binding = "PEDIDOS"
+          id = "$KV"
+          EOF
+          npx --yes wrangler@4 deploy
+          printf '%s' "${{ secrets.MP_TOKEN }}" | npx --yes wrangler@4 secret put MP_TOKEN
+      - name: Chave dos códigos
+        run: |
+          cd pagamento
+          TEM=$(npx --yes wrangler@4 secret list 2>/dev/null | grep -c '"LIC_PRIV"' || true)
+          if [ "$TEM" = "0" ] || [ "${{ inputs.nova_chave }}" = "true" ] || ! [ -s estado.json ]; then
+            node -e "const c=require('crypto');const k=c.generateKeyPairSync('ed25519');require('fs').writeFileSync('/tmp/priv',k.privateKey.export({type:'pkcs8',format:'der'}).toString('base64'));require('fs').writeFileSync('/tmp/pub',k.publicKey.export({type:'spki',format:'der'}).subarray(12).toString('hex'))"
+            npx --yes wrangler@4 secret put LIC_PRIV < /tmp/priv
+            shred -u /tmp/priv
+            PUB=$(cat /tmp/pub)
+          else
+            PUB=$(jq -r .chavePublica estado.json)
+          fi
+          echo "PUB=$PUB" >> $GITHUB_ENV
+      - name: Conferir que o serviço fala com o Mercado Pago
+        run: |
+          sleep 8
+          R=$(curl -sS -X POST "$ORIGEM/pedido" -H 'content-type: application/json' -d '{"maq":"AB12-CD34","valor":89.9,"nome":"Teste da publicação"}')
+          echo "$R" | jq -c '{id: .id, url: (.url // "" | .[0:60]), erro: .erro}'
+          URL=$(echo "$R" | jq -r '.url // empty')
+          case "$URL" in https://www.mercadopago.com.br/*|https://mercadopago.com.br/*) OK=ok ;; *) OK="falhou: $(echo "$R" | jq -r '.erro // "sem resposta"')" ;; esac
+          echo "TESTE=$OK" >> $GITHUB_ENV
+      - name: Gravar o endereço e a chave pública
+        run: |
+          cd pagamento
+          jq -n --arg u "$ORIGEM" --arg p "$PUB" --arg t "$TESTE" --arg d "$(date -u +%FT%TZ)" '{servico:$u, chavePublica:$p, testeMercadoPago:$t, publicadoEm:$d}' > estado.json
+          rm -f wrangler.toml
+          cat estado.json
+          git config user.name "github-actions"; git config user.email "github-actions@users.noreply.github.com"
+          git add estado.json; git commit -m "Serviço de pagamento publicado" || true
+          git pull --rebase && git push
+          [ "$TESTE" = ok ] || { echo "::error::O serviço foi publicado, mas não conseguiu falar com o Mercado Pago: confira o MP_TOKEN"; exit 1; }
