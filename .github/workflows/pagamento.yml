@@ -28,6 +28,13 @@ jobs:
         run: |
           [ -n "$CLOUDFLARE_API_TOKEN" ] || { echo "::error::Falta o segredo CLOUDFLARE_API_TOKEN"; exit 1; }
           [ -n "${{ secrets.MP_TOKEN }}" ] || { echo "::error::Falta o segredo MP_TOKEN"; exit 1; }
+      - name: Limpar o token (espaços, quebra de linha ou o comando de teste colado junto)
+        run: |
+          T=$(printf '%s' "$CLOUDFLARE_API_TOKEN" | grep -oE '[A-Za-z0-9_-]{40,}' | grep -v '^https' | head -1)
+          [ -n "$T" ] || T=$(printf '%s' "$CLOUDFLARE_API_TOKEN" | tr -d ' \r\n\t' | sed 's/^Bearer//')
+          echo "::add-mask::$T"
+          echo "::notice::Token da Cloudflare: ${#T} caracteres depois de limpar (o original tinha ${#CLOUDFLARE_API_TOKEN})"
+          echo "CLOUDFLARE_API_TOKEN=$T" >> $GITHUB_ENV
       - name: Conta, subdomínio e banco de pedidos
         run: |
           api() { curl -sS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" -H "Content-Type: application/json" "$@"; }
