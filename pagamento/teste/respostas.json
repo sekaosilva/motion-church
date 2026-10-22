@@ -1,42 +1,42 @@
 [
   {
     "p": "como coloco a letra da música no telão?",
-    "r": "Clique em + Letra para abrir o banco de letras. Escolha a música e clique em Usar neste projeto. A letra virou um clipe na camada de cima da grade. Clique no clipe para colocar a letra no ar. Você pode trocar de parte clicando na parte que deve aparecer.",
-    "s": "1.781253492"
+    "r": "Clique em + Letra para abrir o banco de letras. Escolha a música e clique em Usar neste projeto. A letra virou um clipe na camada de cima da grade. Clique no clipe para colocar a letra no ar. As partes ficam ao lado, clique na parte que deve aparecer.",
+    "s": "1.753021626"
   },
   {
     "p": "o vídeo está travando na saída, o que faço?",
-    "r": "Se o vídeo está travando na saída, verifique a taxa de quadros por segundo (FPS) que está sendo exibida ao lado do botão \"Desligar saída\". Se estiver em amarelo ou vermelho, isso pode indicar que o desempenho está comprometido. Para aliviar, tente usar vídeos em H.264 ou HEVC do tamanho da tela, feche outros programas e deixe o computador na tomada. Isso pode ajudar a melhorar o desempenho e evitar travamentos.",
-    "s": "2.590360741"
+    "r": "Se o vídeo está travando na saída, verifique a taxa de quadros por segundo (FPS) na parte superior da tela. Se estiver em amarelo ou vermelho, pode indicar que o computador está tendo dificuldade em processar o vídeo. Para aliviar, tente usar vídeos em H.264 ou HEVC do tamanho da tela, feche outros programas e deixe o computador na tomada. Isso pode ajudar a melhorar o desempenho e evitar travamentos.",
+    "s": "5.364732501"
   },
   {
     "p": "como junto dois projetores numa imagem só?",
-    "r": "Para juntar dois ou mais projetores numa imagem só, você precisa usar o recurso \"Blend de projetores\" no menu \"Slices\". Lá, você informa quantos projetores são, a resolução de cada um e quanto a imagem se sobrepõe, e então clique em \"Criar blend\". O programa cria um slice por projetor, já com a borda suave na sobreposição.",
-    "s": "1.979152242"
+    "r": "Para juntar dois ou mais projetores numa imagem só, você precisa usar o recurso \"Blend de projetores\". Em \"Slices\", abra \"Blend de projetores\", informe quantos projetores você tem, a resolução de cada um e quanto a imagem se sobrepõe, e clique em \"Criar blend\". O programa criará um slice por projetor, já com a borda suave na sobreposição.",
+    "s": "2.881576624"
   },
   {
     "p": "quanto custa o programa?",
-    "r": "O programa é gratuito por 15 dias. Depois, para continuar usando sem a marca \"versão de teste\" nas telas de LED, é necessário colaborar com um valor a partir de R$ 89,90 por ano. O pagamento é feito pelo Mercado Pago, com Pix ou cartão.",
-    "s": "1.847374738"
+    "r": "O programa é gratuito por 15 dias. Depois, para continuar usando sem a marca \"versão de teste\" nas telas de LED, é necessário colaborar com um valor a partir de R$ 89,90 por ano.",
+    "s": "1.271404625"
   },
   {
     "p": "dá pra colocar a câmera com uma moldura em volta?",
-    "r": "Sim, é possível colocar a câmera com uma moldura em volta. Para isso, você precisa criar uma camada nova por cima de todas e adicionar um PNG com a área preta onde vai o vídeo e a área transparente onde vai a câmera. Em seguida, coloque o vídeo na camada nova e o PNG na camada abaixo. Clique no botão de opções da camada de cima e escolha \"Só onde a camada de baixo é preta\" em \"Onde esta camada aparece\". Isso fará com que o vídeo apareça só no preto do PNG e a câmera no transparente. Se quiser remover a borda do PNG, feche o olho da camada do PNG.",
-    "s": "5.405938216"
+    "r": "Sim, é possível colocar a câmera com uma moldura em volta. Para isso, você precisa criar uma camada nova por cima de todas, adicionar um PNG com a área preta onde vai o vídeo e a área transparente onde vai a câmera, e então configurar a opção \"Onde esta camada aparece\" para \"Só onde a camada de baixo é preta\". Isso fará com que o vídeo apareça no preto do PNG e a câmera no transparente. Se quiser apenas o recorte, sem a borda do PNG, basta fechar o olho da camada do PNG.",
+    "s": "2.395425008"
   },
   {
     "p": "como passo a bíblia?",
-    "r": "Para passar a Bíblia, clique no botão \"Bíblia\" no Evento. Isso abrirá a janela da Bíblia. Você pode digitar a referência do versículo desejado, como livro, capítulo e versículo, e o versículo aparecerá embaixo para conferir. Clique em \"Mostrar agora\" ou pressione Enter para colocar o versículo no painel. Você também pode usar as setas para passar para o próximo ou anterior versículo. Além disso, você pode clicar em \"Capítulo inteiro\" para mostrar o capítulo todo, a partir do primeiro versículo.",
-    "s": "4.013050830"
+    "r": "Para passar a Bíblia, clique no botão \"Bíblia\" no Evento. Isso abrirá a janela da Bíblia. Você pode digitar a referência do versículo desejado, como livro, capítulo e versículo, e o versículo aparecerá embaixo para conferir. Clique em \"Mostrar agora\" ou pressione Enter para colocar o versículo no painel. Você também pode usar as setas para passar para o próximo ou anterior versículo. Além disso, pode clicar em \"Capítulo inteiro\" para mostrar o capítulo todo.",
+    "s": "3.754550431"
   },
   {
     "p": "o mac diz que o programa está danificado",
-    "r": "Se o Mac disser que o programa está danificado, não mande para o Lixo. Clique em OK ou Concluído. Depois, abra Ajustes do Sistema, entre em Privacidade e Segurança e role a tela até o fim. Ao lado do nome Motion Church, clique em Abrir Mesmo Assim. Se precisar, digite a senha do Mac. Isso só precisa ser feito uma vez em cada Mac.",
-    "s": "1.877821107"
+    "r": "Isso acontece quando o arquivo chegou por internet, WhatsApp ou AirDrop. Não mande para o Lixo. Clique em OK, ou em Concluído. Depois abra Ajustes do Sistema, entre em Privacidade e Segurança e role a tela até o fim. Ao lado do nome Motion Church, clique em Abrir Mesmo Assim. Se não resolver, toque em \"Falar no WhatsApp\" para falar com o criador do programa.",
+    "s": "1.950868125"
   },
   {
     "p": "qual a senha do administrador?",
-    "r": "Não sabe com certeza, pois não há menção a uma senha de administrador nos trechos. Sugiro tocar em \"Falar no WhatsApp\" para falar com o criador do programa.",
-    "s": "1.020716783"
+    "r": "Não sabe com certeza, pois a senha mencionada nos trechos é a senha do Mac, não do Motion Church. Sugiro tocar em \"Falar no WhatsApp\" para falar com o criador do programa.",
+    "s": "1.123298617"
   }
 ]
