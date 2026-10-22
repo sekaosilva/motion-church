@@ -72,6 +72,7 @@ jobs:
           [vars]
           ORIGEM = "$ORIGEM"
           MINIMO = "89.90"
+          LIC_PUBS = "6854fabff3ddccb26338e502287076302533890092f397fe0f85a79187311698,c152a4942242e4de2b53ec74eef6a9e7b46e848db2af8dd4d7d958dc023d0a9b"
           [[kv_namespaces]]
           binding = "PEDIDOS"
           id = "$KV"
@@ -96,6 +97,19 @@ jobs:
             PUB=$(jq -r .chavePublica estado.json)
           fi
           echo "PUB=$PUB" >> $GITHUB_ENV
+      - name: Chave do bônus
+        run: |
+          cd pagamento
+          # chave RSA do bônus: a privada vai só para o segredo do serviço; a pública fica em estado.json (o programa cifra nada com ela; quem publica o bônus cifra as chaves dos vídeos)
+          TEM=$(npx --yes wrangler@4 secret list 2>/dev/null | grep -c '"BONUS_PRIV"' || true)
+          BP=$(jq -r '.bonusPub // empty' estado.json 2>/dev/null || true)
+          if [ "$TEM" = "0" ] || [ -z "$BP" ]; then
+            node -e "const c=require('crypto');const k=c.generateKeyPairSync('rsa',{modulusLength:2048});require('fs').writeFileSync('/tmp/bpriv',k.privateKey.export({type:'pkcs8',format:'der'}).toString('base64'));require('fs').writeFileSync('/tmp/bpub',k.publicKey.export({type:'spki',format:'der'}).toString('base64'))"
+            npx --yes wrangler@4 secret put BONUS_PRIV < /tmp/bpriv
+            shred -u /tmp/bpriv
+            BP=$(cat /tmp/bpub)
+          fi
+          echo "BONUSPUB=$BP" >> $GITHUB_ENV
       - name: Conferir que o serviço fala com o Mercado Pago
         run: |
           # endereço novo na Cloudflare pode levar alguns minutos para responder (certificado do subdomínio)
@@ -110,7 +124,7 @@ jobs:
       - name: Gravar o endereço e a chave pública
         run: |
           cd pagamento
-          jq -n --arg u "$ORIGEM" --arg p "$PUB" --arg t "$TESTE" --arg d "$(date -u +%FT%TZ)" --arg a "${AJUDA:-?} (IA ${IA:-?})" '{servico:$u, chavePublica:$p, testeMercadoPago:$t, ajudaIA:$a, publicadoEm:$d}' > estado.json
+          jq -n --arg u "$ORIGEM" --arg p "$PUB" --arg t "$TESTE" --arg d "$(date -u +%FT%TZ)" --arg a "${AJUDA:-?} (IA ${IA:-?})" --arg bp "$BONUSPUB" '{servico:$u, chavePublica:$p, testeMercadoPago:$t, ajudaIA:$a, bonusPub:$bp, publicadoEm:$d}' > estado.json
           rm -f wrangler.toml
           cat estado.json
           git config user.name "github-actions"; git config user.email "github-actions@users.noreply.github.com"
