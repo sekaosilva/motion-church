@@ -22,21 +22,21 @@ jobs:
           cp /tmp/r.json pagamento/teste/respostas.json
           # bônus: o serviço libera a chave para um código válido (de teste, vence em 1 dia) e o vídeo destrancado confere
           if [ -f pagamento/teste/bonus-teste.json ]; then
-            python3 - <<'PY' > pagamento/teste/bonus-resultado.json || true
+            python3 - <<'PY' > pagamento/teste/bonus-resultado.json 2>&1 || true
           import json, urllib.request, hashlib, subprocess
           t = json.load(open('pagamento/teste/bonus-teste.json')); cat = json.load(open('docs/bonus/catalogo.json')); est = json.load(open('pagamento/estado.json'))
           it = [x for x in cat['itens'] if x['id'] == t['id']][0]
           def chave(cod, maq):
-              rq = urllib.request.Request(est['servico'] + '/bonus/chave', data=json.dumps({'codigo': cod, 'maq': maq, 'cifrada': it['cifrada']}).encode(), headers={'content-type': 'application/json'}, method='POST')
-              try: return json.load(urllib.request.urlopen(rq, timeout=60))
-              except urllib.error.HTTPError as e: return json.load(e)
+              out = subprocess.run(['curl', '-sS', '-m', '60', '-X', 'POST', est['servico'] + '/bonus/chave', '-H', 'content-type: application/json', '-d', json.dumps({'codigo': cod, 'maq': maq, 'cifrada': it['cifrada']})], capture_output=True, text=True).stdout
+              try: return json.loads(out)
+              except Exception: return {'erro': 'resposta: ' + out[:200]}
           r = chave(t['codigo'], t['maq']); r2 = chave(t['codigo'], 'ZZ99-ZZ99'); r3 = chave('MC-AAAAA', t['maq'])
           ok = False
           if r.get('chave'):
               subprocess.check_call(['curl', '-sSL', '-o', '/tmp/b.mcb', cat['base'] + '/' + it['id'] + '.mcb'])
               subprocess.check_call(['openssl', 'enc', '-d', '-aes-256-ctr', '-K', r['chave'], '-iv', r['iv'], '-in', '/tmp/b.mcb', '-out', '/tmp/b.mp4'])
               ok = hashlib.sha256(open('/tmp/b.mp4', 'rb').read()).hexdigest() == it['sha']
-          print(json.dumps({'liberou_e_conferiu': ok, 'outro_computador': r2.get('erro'), 'codigo_falso': r3.get('erro')}, ensure_ascii=False))
+          print(json.dumps({'liberou_e_conferiu': ok, 'liberou': bool(r.get('chave')), 'erro': r.get('erro'), 'outro_computador': r2.get('erro'), 'codigo_falso': r3.get('erro')}, ensure_ascii=False))
           PY
             git add pagamento/teste/bonus-resultado.json
           fi
