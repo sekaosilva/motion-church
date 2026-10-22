@@ -1,0 +1,33 @@
+# Publica os vídeos do bônus (já trancados, .mcb) na release "bonus". Os arquivos chegam em pedaços por um ramo
+# provisório bonus-envio-*: aqui eles são juntados, conferidos pelo sha256 e enviados; depois o ramo é apagado.
+# A release "bonus" é pré-lançamento, para nunca virar a "última versão" dos instaladores.
+name: bonus
+on:
+  push:
+    branches: ['bonus-envio-*']
+permissions:
+  contents: write
+concurrency: bonus
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Juntar e conferir
+        run: |
+          mkdir -p /tmp/sai
+          for s in .bonus/*.sha; do
+            id=$(basename "$s" .sha)
+            cat $(ls .bonus/$id.mcb.* | sort) > /tmp/sai/$id.mcb
+            echo "$(cat $s)  /tmp/sai/$id.mcb" | sha256sum -c -
+          done
+          ls -la /tmp/sai
+      - name: Enviar para a release bonus
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view bonus >/dev/null 2>&1 || gh release create bonus --prerelease --latest=false --title "Bônus do Motion Church (arquivos protegidos)" --notes "Arquivos trancados do bônus. Abra pelo programa Motion Church: botão Bônus, na lista de arquivos."
+          for i in 1 2 3; do gh release upload bonus /tmp/sai/*.mcb --clobber && break; sleep 20; done
+      - name: Apagar o ramo provisório
+        if: success()
+        run: git push origin --delete "${GITHUB_REF_NAME}"
