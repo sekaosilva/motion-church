@@ -1,15 +1,21 @@
 # Junta as partes enviadas pelo tools/publicar.js, confere, cria a release e publica o aviso de atualização.
+# Com o campo bonus: junta os vídeos trancados do bônus que vieram por um ramo provisório e publica na release "bonus"
+# (pré-lançamento, nunca vira a última versão dos instaladores); depois apaga o ramo.
 name: publicar
 on:
   workflow_dispatch:
     inputs:
       versao:
         description: "Versão (ex.: 2.5.0)"
-        required: true
+        required: false
+      bonus:
+        description: "Bônus: ramo provisório (bonus-envio-...) com os vídeos trancados"
+        required: false
 permissions:
   contents: write
 jobs:
   publicar:
+    if: inputs.bonus == ''
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -48,3 +54,27 @@ jobs:
           git push
       - name: Apagar o ramo provisório
         run: git -C envio push origin --delete "envio-${{ inputs.versao }}"
+  bonus:
+    if: inputs.bonus != ''
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.bonus }}
+      - name: Juntar e conferir
+        run: |
+          mkdir -p /tmp/sai
+          for s in .bonus/*.sha; do
+            id=$(basename "$s" .sha)
+            cat $(ls .bonus/$id.mcb.* | sort) > /tmp/sai/$id.mcb
+            echo "$(cat $s)  /tmp/sai/$id.mcb" | sha256sum -c -
+          done
+          ls -la /tmp/sai
+      - name: Enviar para a release bonus
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view bonus >/dev/null 2>&1 || gh release create bonus --prerelease --latest=false --title "Bônus do Motion Church (arquivos protegidos)" --notes "Arquivos trancados do bônus. Abra pelo programa Motion Church: botão Bônus, na lista de arquivos."
+          for i in 1 2 3; do gh release upload bonus /tmp/sai/*.mcb --clobber && break; sleep 20; done
+      - name: Apagar o ramo provisório
+        run: git push origin --delete "${{ inputs.bonus }}"
