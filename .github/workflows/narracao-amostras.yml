@@ -1,43 +1,27 @@
-# Gera amostras de narração com vozes gratuitas (Kokoro e Piper) para o dono escolher a voz das aulas.
+# (2.14.0) Copia o modelo de voz Chatterbox multilíngue (licença MIT, ResembleAI/chatterbox) para a release
+# "modelo-voz" deste repositório, para gerar narração fora do GitHub Actions quando os minutos acabam.
+# A voz do dono (a referência) não passa por aqui: ela fica só no repositório privado da narração.
 name: narracao-amostras
 on: workflow_dispatch
 permissions:
   contents: write
 jobs:
-  amostras:
+  modelo:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Instalar
+      - name: Baixar o modelo
         run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq espeak-ng ffmpeg >/dev/null
-          pip install -q "kokoro>=0.9" soundfile piper-tts
-      - name: Kokoro (mulher e homem)
-        continue-on-error: true
+          pip install -q huggingface_hub
+          python -c "from huggingface_hub import snapshot_download; snapshot_download(repo_id='ResembleAI/chatterbox', local_dir='modelo', allow_patterns=['ve.pt','t3_mtl23ls_v2.safetensors','s3gen.pt','grapheme_mtl_merged_expanded_v1.json','conds.pt','LICENSE'])"
+          cd modelo && rm -rf .cache && ls -la
+          for f in *; do s=$(stat -c%s "$f"); if [ $s -gt 1900000000 ]; then split -b 1800m -d -a 2 "$f" "$f.p" && rm "$f"; fi; done; ls -la
+      - name: Publicar na release modelo-voz
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          mkdir -p saida
-          python - <<'PY'
-          from kokoro import KPipeline
-          import soundfile as sf, numpy as np
-          t = open('narracao/amostra.txt', encoding='utf-8').read().strip()
-          p = KPipeline(lang_code='p')
-          for voz, nome in [('pf_dora', 'kokoro-mulher'), ('pm_alex', 'kokoro-homem')]:
-              partes = [a for _, _, a in p(t, voice=voz, speed=1.0)]
-              sf.write(f'saida/{nome}.wav', np.concatenate(partes), 24000)
-          PY
-      - name: Piper (homem)
-        continue-on-error: true
-        run: |
-          mkdir -p saida
-          curl -sSL -o faber.onnx https://huggingface.co/rhasspy/piper-voices/resolve/main/pt/pt_BR/faber/medium/pt_BR-faber-medium.onnx
-          curl -sSL -o faber.onnx.json https://huggingface.co/rhasspy/piper-voices/resolve/main/pt/pt_BR/faber/medium/pt_BR-faber-medium.onnx.json
-          piper -m faber.onnx -f saida/piper-homem.wav < narracao/amostra.txt
-      - name: Converter e guardar
-        run: |
-          cd saida && for f in *.wav; do ffmpeg -loglevel error -y -i "$f" -b:a 128k "${f%.wav}.mp3"; done; rm -f *.wav; ls -la
-          cd .. && git config user.name github-actions && git config user.email github-actions@users.noreply.github.com
-          git checkout -B narracao-amostras && mkdir -p narracao/amostras && mv saida/*.mp3 narracao/amostras/
-          git add narracao/amostras && git commit -m "Amostras de narração" && git push -f origin narracao-amostras
+          gh release view modelo-voz >/dev/null 2>&1 || gh release create modelo-voz --prerelease --latest=false --title "Modelo de voz (Chatterbox, MIT)" --notes "Cópia do modelo ResembleAI/chatterbox (licença MIT) para gerar a narração das videoaulas."
+          for i in 1 2 3; do gh release upload modelo-voz modelo/* --clobber && break; sleep 20; done
