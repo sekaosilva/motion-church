@@ -1,0 +1,3 @@
+MotionChurch-Mac-AppleSilicon.zip
+MotionChurch-Mac-Intel.zip
+MotionChurch-Windows.exe

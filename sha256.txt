@@ -1,0 +1,3 @@
+0cb271276d5351d4ed174f491358d7130dbee298e2c4186309651f6e4bea3465  MotionChurch-Mac-AppleSilicon.zip
+3d42b8e72113a3e9db8b22912987be05cf1d8cb070f997d0a04dc84560a916d7  MotionChurch-Mac-Intel.zip
+39394f7c731d73b5d44de6c12a2e243b9bce33f769c42ac386795044f170030e  MotionChurch-Windows.exe
