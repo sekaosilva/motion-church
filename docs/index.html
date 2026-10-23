@@ -418,7 +418,7 @@ const AULAS=[
   {f:'08-efeitos',n:'Módulo 8',t:'Prévia, tempo, efeitos e avisos',d:'Ver o vídeo antes de ir para o ar, quanto falta, repetir ou não e o plano de fundo do evento direto na camada, os efeitos e o nome do clipe no botão direito, o painel de avisos e o medidor de desempenho.',s:433},
   {f:'09-eventos',n:'Módulo 9',t:'Vários eventos',d:'Culto da manhã e da tarde no mesmo mapeamento: criar o evento novo, trocar só o que muda e renomear as abas.',s:149},
   {f:'10-projetores',n:'Módulo 10',t:'Projetores: blend e keystone',d:'Juntar vários projetores numa imagem só com a emenda suave, ajustar a borda e acertar projetor torto canto a canto.',s:192},
-  {f:'11-palco',n:'Módulo 11',t:'Palco, contagem, sorteador e bônus',d:'O monitor de palco com a letra e a próxima parte, o versículo só para o pregador, a contagem regressiva, o sorteador de números no LED ou no palco e o bônus de motions e contagens para colaboradores.',s:226}
+  {f:'11-palco',n:'Módulo 11',t:'Palco, contagem, sorteador e bônus',d:'O monitor de palco com a letra e a próxima parte, o versículo só para o pregador, a contagem regressiva, o sorteador de números no LED ou no palco e o bônus de motions e contagens para colaboradores.',s:229}
 ];
 const $=s=>document.querySelector(s),mmss=s=>Math.floor(s/60)+':'+String(Math.round(s%60)).padStart(2,'0');
 const grade=$('#grade'),vid=$('#vid');let cur=0;
@@ -486,7 +486,7 @@ fetch('https://api.github.com/repos/sekaosilva/motion-church/releases/latest').t
   }
   F.addEventListener('click',e=>{const b=e.target.closest('[data-c]');if(!b)return;cat=b.dataset.c;desenha();});
   fetch('bonus/catalogo.json',{cache:'no-store'}).then(r=>r.json()).then(c=>{itens=c.itens||[];
-    N.textContent=itens.length?`Hoje são ${itens.length} vídeos (${itens.filter(x=>x.gratis).length} grátis), e a pasta continua crescendo. No programa: botão Bônus, na barra dos clipes ou na lista de arquivos.`:'';desenha();})
+    N.textContent=itens.length?`Hoje são ${itens.length} vídeos (${itens.filter(x=>x.gratis).length} grátis), e a pasta continua crescendo. No programa: botão Bônus, na barra dos clipes.`:'';desenha();})
     .catch(()=>{G.innerHTML='<p class="bnota">Não deu para carregar a prévia agora.</p>';});
 })();
 </script>
