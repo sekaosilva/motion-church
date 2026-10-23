@@ -129,6 +129,21 @@ section{padding:92px 0}
 .ls .tx small{font-size:12px;font-weight:800;color:var(--faint);letter-spacing:.06em;text-transform:uppercase}
 .ls .tx b{font-size:15px;font-weight:700;line-height:1.3}
 
+/* bônus para colaboradores */
+#bonus .bfil{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+#bonus .bfil button{all:unset;cursor:pointer;padding:7px 15px;border-radius:999px;border:1px solid var(--line2);color:var(--dim);font-weight:700;font-size:14px}
+#bonus .bfil button.on{color:#fff;border-color:var(--accent);background:rgba(30,155,255,.14)}
+.bg{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px}
+@media (max-width:1100px){.bg{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:760px){.bg{grid-template-columns:repeat(2,1fr)}}
+.bc{border-radius:12px;overflow:hidden;background:var(--card);border:1px solid var(--line)}
+.bc .v{position:relative;aspect-ratio:16/9;background:#000}
+.bc video{width:100%;height:100%;object-fit:cover;display:block}
+.bc .tag{position:absolute;left:8px;top:8px;font-size:11.5px;font-weight:800;border-radius:6px;padding:2px 8px;letter-spacing:.03em}
+.bc .tag.g{background:#16a34a;color:#fff}.bc .tag.c{background:rgba(0,0,0,.72);color:#fcd34d;border:1px solid rgba(252,211,77,.45)}
+.bc .k{position:absolute;right:8px;top:8px;font-size:11px;font-weight:800;background:rgba(0,0,0,.7);border-radius:5px;padding:2px 6px}
+.bc .tx{padding:10px 13px 12px}.bc .tx b{display:block;font-size:14.5px}.bc .tx small{color:var(--faint);font-size:12px}
+.bnota{margin-top:18px;color:var(--dim);font-size:15px}
 /* colaborar */
 .colab{display:grid;grid-template-columns:1.1fr .9fr;gap:22px;align-items:stretch}
 .box{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:30px}
@@ -252,7 +267,7 @@ h1,h2,h3{text-wrap:balance}p,li,.lead{text-wrap:pretty}
 
 <header class="nav"><div class="wrap">
   <a href="#topo" aria-label="Motion Church, início"><img src="img/logo.png" alt="Motion Church" width="102" height="34"></a>
-  <nav aria-label="Seções"><a href="#como">Como funciona</a><a href="#recursos">Recursos</a><a href="#baixar">Baixar</a><a href="#aulas">Aulas</a><a href="#colaborar">Colaborar</a><a href="#perguntas">Perguntas</a></nav>
+  <nav aria-label="Seções"><a href="#como">Como funciona</a><a href="#recursos">Recursos</a><a href="#baixar">Baixar</a><a href="#aulas">Aulas</a><a href="#colaborar">Colaborar</a><a href="#bonus">Bônus</a><a href="#perguntas">Perguntas</a></nav>
   <a class="btn primary sm" href="#baixar">Baixar grátis</a>
 </div></header>
 
@@ -348,16 +363,23 @@ h1,h2,h3{text-wrap:balance}p,li,.lead{text-wrap:pretty}
   <div class="colab">
     <div class="box tl">
       <div><i>1</i><p style="margin:0"><b>15 dias grátis, com tudo liberado</b><span>Baixe, instale e use no culto. O aviso no alto da tela mostra quantos dias faltam.</span></p></div>
-      <div><i>2</i><p style="margin:0"><b>Colabore pelo próprio programa</b><span>Clique no aviso "Seja colaborador", lá em cima: tem o QR Code do Pix, o copia e cola, e cartão ou boleto pelo Mercado Pago.</span></p></div>
-      <div><i>3</i><p style="margin:0"><b>Receba o código de colaborador</b><span>Mande o comprovante e o código do computador (aparece na mesma janela) pelo WhatsApp. Você recebe o código de colaborador com o nome da sua igreja: cole no programa e pronto.</span></p></div>
+      <div><i>2</i><p style="margin:0"><b>Colabore pelo próprio programa</b><span>Clique no aviso lá em cima, escolha o valor (a partir de R$ 89,90) e pague pelo Mercado Pago, com Pix ou cartão.</span></p></div>
+      <div><i>3</i><p style="margin:0"><b>Liberado na hora, sozinho</b><span>Assim que o pagamento é aprovado, o programa ativa neste computador. Não precisa mandar comprovante. E o Bônus de motions e contagens fica liberado.</span></p></div>
     </div>
     <div class="box price">
       <div class="eyebrow">Colaborador</div>
       <div class="v"><small style="display:block;font-size:15px;margin-bottom:6px">a partir de</small>R$ 89,90<small> por ano</small></div>
-      <p>Cada colaboração libera um computador por um ano. Sem colaboração, o programa continua funcionando, com a marca "versão de teste" nas telas.</p>
+      <p>Cada colaboração libera um computador por um ano, com o Bônus de motions e contagens regressivas incluído. Sem colaboração, o programa continua funcionando, com a marca "versão de teste" nas telas.</p>
       <a class="btn primary" href="#baixar" style="align-self:flex-start;margin-top:auto">Começar o teste grátis</a>
     </div>
   </div>
+</div></section>
+
+<section id="bonus"><div class="wrap">
+  <div class="sec-head"><div class="eyebrow">Bônus para colaboradores</div><h2>Uma pasta de motions sempre atualizada</h2><p class="lead">Quem colabora recebe, dentro do programa, uma pasta de motions para cultos e contagens regressivas em 4K, que cresce com o tempo. É só clicar em Bônus, baixar e arrastar para a grade. Duas amostras são grátis para todo mundo.</p></div>
+  <div class="bfil" id="bfil"></div>
+  <div class="bg" id="bgrade"><p class="bnota">Carregando a prévia…</p></div>
+  <p class="bnota" id="bnum"></p>
 </div></section>
 
 <section id="perguntas"><div class="wrap">
@@ -447,6 +469,25 @@ fetch('https://api.github.com/repos/sekaosilva/motion-church/releases/latest').t
   var links={};[].forEach.call(nav.querySelectorAll('nav a'),function(a){links[a.getAttribute('href').slice(1)]=a});
   var spy=new IntersectionObserver(function(es){es.forEach(function(x){var a=links[x.target.id];if(!a)return;if(x.isIntersecting){for(var k in links){links[k].classList.remove('on');links[k].removeAttribute('aria-current')}a.classList.add('on');a.setAttribute('aria-current','true')}else a.classList.remove('on')})},{rootMargin:'-45% 0px -50% 0px'});
   Object.keys(links).forEach(function(id){var e=document.getElementById(id);if(e)spy.observe(e)});
+})();
+
+// bônus: a prévia de cada vídeo da pasta dos colaboradores (o catálogo é o mesmo que o programa usa)
+(()=>{
+  const G=document.getElementById('bgrade'),F=document.getElementById('bfil'),N=document.getElementById('bnum');if(!G)return;
+  const mm=s=>{s=Math.round(s||0);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');};
+  const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  let itens=[],cat='';
+  const vis='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIntersecting){const p=v.play();if(p&&p.catch)p.catch(()=>{});}else v.pause();}),{threshold:.35}):null;
+  function desenha(){
+    const cats=[...new Set(itens.map(x=>x.cat))];
+    F.innerHTML=['Todos'].concat(cats).map(c=>`<button class="${(c==='Todos'?'':c)===cat?'on':''}" data-c="${esc(c==='Todos'?'':c)}">${esc(c)}</button>`).join('');
+    G.innerHTML=itens.filter(x=>!cat||x.cat===cat).map(x=>`<div class="bc"><div class="v"><video muted loop playsinline preload="none" poster="${x.img}" src="bonus/previa/${x.id}.mp4"></video>${x.gratis?'<span class="tag g">Grátis</span>':'<span class="tag c">Colaboradores</span>'}${x.w>=3800?'<span class="k">4K</span>':''}</div><div class="tx"><b>${esc(x.nome)}</b><small>${esc(x.cat)}${x.dur?' · '+mm(x.dur):''}</small></div></div>`).join('');
+    G.querySelectorAll('video').forEach(v=>{if(vis)vis.observe(v);else v.autoplay=true;});
+  }
+  F.addEventListener('click',e=>{const b=e.target.closest('[data-c]');if(!b)return;cat=b.dataset.c;desenha();});
+  fetch('bonus/catalogo.json',{cache:'no-store'}).then(r=>r.json()).then(c=>{itens=c.itens||[];
+    N.textContent=itens.length?`Hoje são ${itens.length} vídeos (${itens.filter(x=>x.gratis).length} grátis), e a pasta continua crescendo. No programa: botão Bônus, na barra dos clipes ou na lista de arquivos.`:'';desenha();})
+    .catch(()=>{G.innerHTML='<p class="bnota">Não deu para carregar a prévia agora.</p>';});
 })();
 </script>
 </body>
