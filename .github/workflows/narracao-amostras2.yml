@@ -1,61 +1,80 @@
-# Amostras mais naturais: Kokoro homem com ritmo e pausas ajustados, e Chatterbox (multilíngue, licença MIT) com o timbre do Kokoro homem.
-name: narracao-amostras2
+# (2.17.0) Este arquivo foi reaproveitado: monta o leitor de NDI (grandiose, Apache-2.0, sobre o NDI SDK 6)
+# para Mac (Apple e Intel), Windows e Linux, e publica na release "ndi". O build do programa baixa daqui.
+name: ndi-binarios
 on: workflow_dispatch
 permissions:
   contents: write
 jobs:
-  amostras:
-    runs-on: ubuntu-latest
-    timeout-minutes: 90
+  mac:
+    runs-on: macos-14
+    timeout-minutes: 40
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - name: Instalar
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Compilar (Apple e Intel)
         run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq espeak-ng ffmpeg >/dev/null
-          pip install -q "kokoro>=0.9" soundfile
-      - name: Kokoro homem com pausas
+          mkdir w && cd w && npm init -y >/dev/null
+          npm i --no-audit --no-fund @stagetimerio/grandiose@0.2.1
+          G=node_modules/@stagetimerio/grandiose
+          mkdir -p ../saida
+          cp $G/build/Release/grandiose.node ../saida/ndi-darwin-arm64.node
+          cp $G/build/Release/libndi.dylib ../saida/libndi.dylib
+          cp $G/dist/index.js ../saida/ndi-index.js
+          (cd $G && npx -y node-gyp@11 rebuild --arch=x64)
+          cp $G/build/Release/grandiose.node ../saida/ndi-darwin-x64.node
+          lipo -info ../saida/libndi.dylib || true
+          file ../saida/*.node
+          otool -L ../saida/ndi-darwin-arm64.node || true
+          otool -l ../saida/ndi-darwin-arm64.node | grep -A2 LC_RPATH || true
+      - uses: actions/upload-artifact@v4
+        with: { name: mac, path: saida }
+  win:
+    runs-on: windows-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Compilar (Windows x64)
+        shell: bash
         run: |
-          mkdir -p saida
-          python - <<'PY'
-          from kokoro import KPipeline
-          import soundfile as sf, numpy as np, re
-          t = open('narracao/amostra.txt', encoding='utf-8').read().strip()
-          p = KPipeline(lang_code='p')
-          frases = [f.strip() for f in re.split(r'(?<=[.!?])\s+', t) if f.strip()]
-          sr = 24000; out = [np.zeros(int(sr * .25))]
-          for vel, nome in [(0.92, 'kokoro-homem-pausas'), (0.86, 'kokoro-homem-calmo')]:
-              out = [np.zeros(int(sr * .25))]
-              for f in frases:
-                  out += [a for _, _, a in p(f, voice='pm_alex', speed=vel)]
-                  out.append(np.zeros(int(sr * (.42 if f.endswith('.') else .25))))
-              sf.write(f'saida/{nome}.wav', np.concatenate(out), sr)
-          # referência de timbre para o Chatterbox: uma frase do Kokoro homem
-          ref = [a for _, _, a in p('Olá! Bem-vindo ao Motion Church. Nesta aula você vai aprender a montar o culto passo a passo.', voice='pm_alex', speed=0.95)]
-          sf.write('ref-homem.wav', np.concatenate(ref), sr)
-          PY
-      - name: Chatterbox multilíngue
-        continue-on-error: true
+          mkdir w && cd w && npm init -y >/dev/null
+          npm i --no-audit --no-fund @stagetimerio/grandiose@0.2.1
+          G=node_modules/@stagetimerio/grandiose
+          mkdir -p ../saida
+          cp $G/build/Release/grandiose.node ../saida/ndi-win32-x64.node
+          cp $G/build/Release/Processing.NDI.Lib.x64.dll ../saida/
+          ls -la ../saida
+      - uses: actions/upload-artifact@v4
+        with: { name: win, path: saida }
+  linux:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Compilar (Linux x64, para os testes)
         run: |
-          pip install -q chatterbox-tts
-          python - <<'PY'
-          import torch, torchaudio, re
-          from chatterbox.mtl_tts import ChatterboxMultilingualTTS
-          m = ChatterboxMultilingualTTS.from_pretrained(device='cpu')
-          t = open('narracao/amostra.txt', encoding='utf-8').read().strip()
-          frases = [f.strip() for f in re.split(r'(?<=[.!?])\s+', t) if f.strip()]
-          for ref, nome in [('ref-homem.wav', 'chatterbox-homem'), (None, 'chatterbox-padrao')]:
-              partes = []
-              for f in frases:
-                  w = m.generate(f, language_id='pt', audio_prompt_path=ref, exaggeration=0.5, cfg_weight=0.5) if ref else m.generate(f, language_id='pt')
-                  partes += [w, torch.zeros(1, int(m.sr * .35))]
-              torchaudio.save(f'saida/{nome}.wav', torch.cat(partes, dim=1), m.sr)
-          PY
-      - name: Converter e guardar
+          mkdir w && cd w && npm init -y >/dev/null
+          npm i --no-audit --no-fund @stagetimerio/grandiose@0.2.1
+          G=node_modules/@stagetimerio/grandiose
+          mkdir -p ../saida
+          cp $G/build/Release/grandiose.node ../saida/ndi-linux-x64.node
+          cp -L $G/build/Release/libndi.so.6 ../saida/libndi.so.6
+          cp $G/dist/index.js ../saida/ndi-index-linux.js
+          ls -la ../saida; ls -la $G/ndi || true; find $G/ndi -iname "*licen*" -o -iname "*.txt" | head
+          find $G/ndi -iname "*licen*" -exec cp {} ../saida/ \; || true
+      - uses: actions/upload-artifact@v4
+        with: { name: linux, path: saida }
+  publicar:
+    needs: [mac, win, linux]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { path: tudo }
+      - name: Release ndi
+        env: { GH_TOKEN: "${{ github.token }}" }
         run: |
-          cd saida && for f in *.wav; do ffmpeg -loglevel error -y -i "$f" -b:a 128k "${f%.wav}.mp3"; done; rm -f *.wav; ls -la
-          cd .. && git config user.name github-actions && git config user.email github-actions@users.noreply.github.com
-          git checkout -B narracao-amostras2 && mkdir -p narracao/amostras2 && mv saida/*.mp3 narracao/amostras2/
-          git add narracao/amostras2 && git commit -m "Amostras de narração 2" && git push -f origin narracao-amostras2
+          mkdir s && find tudo -type f -exec cp {} s/ \;
+          (cd s && sha256sum * > SHA256SUMS.txt && ls -la)
+          gh release view ndi -R ${{ github.repository }} >/dev/null 2>&1 || gh release create ndi -R ${{ github.repository }} --prerelease --latest=false -t "Leitor de NDI (componentes)" -n "Componentes do leitor de NDI usados pelo Motion Church. NDI® é uma marca registrada da Vizrt NDI AB."
+          gh release upload ndi s/* -R ${{ github.repository }} --clobber
