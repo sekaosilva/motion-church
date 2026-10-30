@@ -37,13 +37,22 @@ jobs:
       - name: Compilar (Windows x64)
         shell: bash
         run: |
-          mkdir w && cd w && npm init -y >/dev/null
-          npm i --no-audit --no-fund @stagetimerio/grandiose@0.2.1
-          G=node_modules/@stagetimerio/grandiose
-          mkdir -p ../saida
-          cp $G/build/Release/grandiose.node ../saida/ndi-win32-x64.node
-          cp $G/build/Release/Processing.NDI.Lib.x64.dll ../saida/
-          ls -la ../saida
+          set -o pipefail
+          ( mkdir w && cd w && npm init -y >/dev/null
+            npm i --no-audit --no-fund --foreground-scripts @stagetimerio/grandiose@0.2.1
+            G=node_modules/@stagetimerio/grandiose
+            ls -la $G $G/build/Release || true
+            mkdir -p ../saida
+            cp $G/build/Release/grandiose.node ../saida/ndi-win32-x64.node
+            cp $G/build/Release/Processing.NDI.Lib.x64.dll ../saida/
+            ls -la ../saida ) 2>&1 | tee log-win.txt
+      - name: Guardar o registro (se falhar)
+        if: failure()
+        shell: bash
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: |
+          gh release view ndi-log -R ${{ github.repository }} >/dev/null 2>&1 || gh release create ndi-log -R ${{ github.repository }} --prerelease --latest=false -t "registro" -n "registro do build do NDI"
+          gh release upload ndi-log log-win.txt -R ${{ github.repository }} --clobber
       - uses: actions/upload-artifact@v4
         with: { name: win, path: saida }
   linux:
