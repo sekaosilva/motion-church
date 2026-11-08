@@ -82,8 +82,23 @@ section{padding:92px 0}
 .f .ic{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;background:rgba(30,155,255,.12);color:var(--accent2);box-shadow:inset 0 0 0 1px rgba(30,155,255,.35),0 0 18px -4px rgba(30,155,255,.6)}
 .f h3{font-size:18px;font-weight:700}
 .f p{margin:0;color:var(--dim);font-size:15px}
-.f.wide{grid-column:1/-1}.f .deckdl{color:var(--accent2);font-weight:700;text-decoration:none}.f .deckdl:hover{text-decoration:underline}.f .novo{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:999px;background:var(--accent2);color:#fff;font-size:12px;font-weight:700;vertical-align:middle}
+.f.wide{grid-column:1/-1}.f .novo{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:999px;background:var(--accent2);color:#fff;font-size:12px;font-weight:700;vertical-align:middle}
 
+
+/* Ulanzi Deck (2.22) */
+.novo-chip{display:inline-flex;align-items:center;gap:10px;margin-bottom:16px;padding:6px 14px 6px 6px;border-radius:999px;border:1px solid rgba(30,155,255,.45);background:rgba(30,155,255,.1);color:var(--fg);font:600 14px Manrope,sans-serif;text-decoration:none;transition:background .2s}
+.novo-chip:hover{background:rgba(30,155,255,.2)}
+.novo-chip b{background:linear-gradient(180deg,#38b2ff,#0f78f0);color:#fff;border-radius:999px;padding:4px 10px;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+#deck{background:radial-gradient(1200px 500px at 80% 40%,rgba(30,155,255,.12),transparent 70%),var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.deck{display:grid;grid-template-columns:1fr 1.05fr;gap:56px;align-items:center}
+.deck img{width:100%;height:auto;filter:drop-shadow(0 30px 60px rgba(0,0,0,.6))}
+.deck ul{list-style:none;padding:0;margin:22px 0 26px;display:grid;gap:14px}
+.deck li{display:flex;gap:12px;color:var(--dim);font-size:16px;line-height:1.5}
+.deck li b{color:var(--fg)}
+.deck li::before{content:"";flex:none;width:9px;height:9px;margin-top:8px;border-radius:50%;background:var(--accent2);box-shadow:0 0 10px rgba(30,155,255,.8)}
+.deck .acts{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.deck small{display:block;margin-top:14px;color:var(--dim);font-size:13.5px}
+@media (max-width:900px){.deck{grid-template-columns:1fr;gap:32px}.deck .pic{order:-1;max-width:460px;margin:0 auto}}
 /* baixar */
 #baixar{background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .dl{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
@@ -268,7 +283,7 @@ h1,h2,h3{text-wrap:balance}p,li,.lead{text-wrap:pretty}
 
 <header class="nav"><div class="wrap">
   <a href="#topo" aria-label="Motion Church, início"><img src="img/logo.png" alt="Motion Church" width="102" height="34"></a>
-  <nav aria-label="Seções"><a href="#como">Como funciona</a><a href="#recursos">Recursos</a><a href="#baixar">Baixar</a><a href="#aulas">Aulas</a><a href="#colaborar">Colaborar</a><a href="#bonus">Bônus</a><a href="#perguntas">Perguntas</a></nav>
+  <nav aria-label="Seções"><a href="#como">Como funciona</a><a href="#recursos">Recursos</a><a href="#deck">Ulanzi Deck</a><a href="#baixar">Baixar</a><a href="#aulas">Aulas</a><a href="#colaborar">Colaborar</a><a href="#bonus">Bônus</a><a href="#perguntas">Perguntas</a></nav>
   <a class="btn primary sm" href="#baixar">Baixar grátis</a>
 </div></header>
 
@@ -277,6 +292,7 @@ h1,h2,h3{text-wrap:balance}p,li,.lead{text-wrap:pretty}
   <div class="hero-top">
     <div>
       <img class="hero-logo" src="img/logo-grande.png" alt="Motion Church, By Seraph" width="1100" height="367">
+      <a class="novo-chip" href="#deck"><b>Novo</b>Controle o culto pelo Ulanzi Deck →</a>
       <div class="eyebrow">Para a equipe de mídia da igreja</div>
       <h1 style="margin-top:14px">O culto inteiro no LED e nos projetores, <em>sem complicação.</em></h1>
       <p class="lead">Mapeie o painel de LED ou junte os projetores uma vez e, no culto, só clique: vídeos, letras de música, Bíblia, câmera ao vivo, efeitos e avisos saindo prontos para cada tela do palco.</p>
@@ -315,7 +331,28 @@ h1,h2,h3{text-wrap:balance}p,li,.lead{text-wrap:pretty}
     <div class="f"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="5" width="18" height="15" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div><h3>Vários eventos</h3><p>Culto de manhã e outro à tarde? Cada evento numa aba, com o mesmo mapeamento: troque só o que muda.</p></div>
     <div class="f"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg></div><h3>Efeitos e avisos</h3><p>Estrobo, preto e branco, trocar cor e mais, no botão direito. Avisos rolando ou piscando por cima de tudo. Sorteador de números no telão ou no palco. Para colaboradores, um bônus de motions para cultos e contagens regressivas em 4K, com amostras grátis.</p></div>
     <div class="f"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg></div><h3>Atualiza sozinho</h3><p>Quando sai uma versão nova, o programa avisa e se atualiza com um clique, sem perder os seus projetos.</p></div>
-    <div class="f wide"><div class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><rect x="5" y="7" width="4" height="4" rx="1"/><rect x="10" y="7" width="4" height="4" rx="1"/><rect x="15" y="7" width="4" height="4" rx="1"/><circle cx="8" cy="16" r="1.6"/><circle cx="12" cy="16" r="1.6"/><circle cx="16" cy="16" r="1.6"/></svg></div><h3>Controle pelo Ulanzi Deck<span class="novo">Novo na 2.22</span></h3><p>Com o plugin Seraph no Ulanzi Creative Deck (D200X), cada tecla mostra a miniatura do clipe da coluna e fica vermelha quando ela está no ar. Apague a tela, pause, tire o som, ligue a saída e tire a Bíblia do ar com um toque, e gire o botão para passar a letra ou o versículo, sem precisar trazer o Motion Church para a frente. São 4 páginas prontas, todas do Motion Church: colunas 1 a 20, cronômetros, contagem para o culto e um botão de girar para escolher a coluna e pôr no ar.</p><p><a class="deckdl" href="deck/Motion-Church-Ulanzi-Deck.zip" download>Baixar o plugin para Ulanzi Deck (Mac)</a> · precisa do Ulanzi Studio 3 e do Motion Church 2.22 ou mais novo.</p></div>
+  </div>
+</div></section>
+
+<section id="deck"><div class="wrap">
+  <div class="deck">
+    <div class="pic"><img src="img/ulanzi-deck.webp" alt="Ulanzi Creative Deck com as teclas do Motion Church: colunas com a miniatura do clipe, a coluna no ar em vermelho, apagar tela, pausar, som, Bíblia, letras, cronômetro e contagem" width="1112" height="946" loading="lazy"></div>
+    <div>
+      <div class="eyebrow">Novo na 2.22 · Ulanzi Deck</div>
+      <h2 style="margin-top:12px">O culto nas teclas, sem procurar nada na tela</h2>
+      <p class="lead">Ligue um Ulanzi Creative Deck (D200X) no Mac e controle o Motion Church por teclas com tela e botões de girar. O Deck sabe o que está no ar e mostra tudo nas próprias teclas.</p>
+      <ul>
+        <li><span><b>Colunas com a miniatura do clipe.</b> Aperte e a coluna vai para o ar; a tecla fica vermelha enquanto ela está no ar.</span></li>
+        <li><span><b>Tela, som e Bíblia num toque.</b> Apagar tela, pausar, som, saída, tirar a Bíblia do ar, letras e parar tudo.</span></li>
+        <li><span><b>Botões de girar.</b> Passe a letra ou o versículo, ajuste o cronômetro da pregação e escolha a coluna vendo a miniatura.</span></li>
+        <li><span><b>4 páginas prontas.</b> Colunas de 1 a 20, cronômetros, contagem para o culto, salvar, abrir, desfazer e refazer.</span></li>
+      </ul>
+      <div class="acts">
+        <a class="btn primary" href="deck/Motion-Church-Ulanzi-Deck.zip" download>Baixar o plugin (Mac)</a>
+        <a class="btn ghost" href="#aulas" data-aula="14-deck">Ver a aula</a>
+      </div>
+      <small>Grátis. Precisa do Ulanzi Studio 3 e do Motion Church 2.22 ou mais novo.</small>
+    </div>
   </div>
 </div></section>
 
@@ -437,6 +474,7 @@ function tocar(i,play){
 }
 grade.addEventListener('click',e=>{const b=e.target.closest('.ls');if(b)tocar(+b.dataset.i,true);});
 $('#nowNext').onclick=()=>{if(cur<AULAS.length-1)tocar(cur+1,true);};
+document.querySelectorAll('[data-aula]').forEach(b=>b.addEventListener('click',e=>{const i=AULAS.findIndex(x=>x.f===b.dataset.aula);if(i>=0){e.preventDefault();tocar(i,true);}}));
 vid.addEventListener('ended',()=>{if(cur<AULAS.length-1)tocar(cur+1,true);});
 
 // sugere o download certo para o computador de quem está vendo
