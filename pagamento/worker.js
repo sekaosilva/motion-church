@@ -3,11 +3,12 @@
 //
 // Segredos (wrangler secret put): MP_TOKEN = Access Token de produção do Mercado Pago;
 //   LIC_PRIV = chave Ed25519 do pagamento (pkcs8 em base64). Ela é só deste serviço: não sai da senha de administrador.
-// Variáveis: ORIGEM = endereço público deste serviço; MINIMO = valor mínimo (89.90);
+// Planos (16/11/2026): mensal R$ 49,90 libera 31 dias; anual R$ 499,00 libera 365 dias. O pedido diz o plano.
+// Variáveis: ORIGEM = endereço público deste serviço;
 //   MP_API = endereço da API do Mercado Pago (só muda nos testes). KV: PEDIDOS.
 //
 // Caminhos:
-//   POST /pedido        {maq, valor, nome}  → cria o pedido e o pagamento no Mercado Pago → {id, url}
+//   POST /pedido        {maq, plano: mensal | anual, nome}  → cria o pedido e o pagamento no Mercado Pago → {id, url}
 //   GET  /pedido/<id>   → {status: aguardando | pago | recusado, codigo?, ate?}  (confere no Mercado Pago a cada consulta)
 //   POST /mp            aviso do Mercado Pago (pagamento aprovado) → gera o código na hora
 //   GET  /obrigado?p=<id>  página de volta do pagamento
@@ -26,14 +27,15 @@ const maqOk = t => typeof t === 'string' && /^[0-9A-HJKMNP-TV-Z]{4}-?[0-9A-HJKMN
 const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
 const json = (o, st = 200) => new Response(JSON.stringify(o), { status: st, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' } });
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-const minimo = env => +(env.MINIMO || 89.9);
+const PLANOS = { mensal: { valor: 49.9, dias: 31, nome: '1 mês', desc: 'um mês' }, anual: { valor: 499, dias: 365, nome: '1 ano', desc: 'um ano' } };
+const VELHO = 'Atualize o Motion Church: agora a colaboração é de R$ 49,90 por mês ou R$ 499,00 por ano. Feche e abra o programa para receber a versão nova.';
 const api = env => (env.MP_API || 'https://api.mercadopago.com').replace(/\/$/, '');
 
 // mesmo formato do gerador do administrador (tools/chaves.js): versão 2, vence, emitido, computador, nome + assinatura
-async function gerarCodigo(env, nome, maq, hoje) {
+async function gerarCodigo(env, nome, maq, hoje, dias = DIAS) {
   const nb = enc.encode(String(nome || 'Colaborador').trim().slice(0, 60)).subarray(0, 60), mb = deB32(maq);
   if (!mb || mb.length !== 5) throw new Error('computador');
-  const d0 = Math.floor((hoje - BASE_DIA) / DIA), vence = d0 + DIAS - 1;
+  const d0 = Math.floor((hoje - BASE_DIA) / DIA), vence = d0 + Math.max(1, Math.min(3650, Math.round(dias) || DIAS)) - 1;
   const dados = new Uint8Array(10 + nb.length), dv = new DataView(dados.buffer);
   dados[0] = 2; dv.setUint16(1, vence); dv.setUint16(3, d0); dados.set(mb, 5); dados.set(nb, 10);
   const key = await crypto.subtle.importKey('pkcs8', b64(env.LIC_PRIV), { name: 'Ed25519' }, false, ['sign']);
@@ -49,8 +51,8 @@ async function mp(env, caminho, opt) {
   return r.json();
 }
 
-// pagamento aprovado e com pelo menos o mínimo, em reais, para este pedido
-const vale = (env, p, id) => p && p.status === 'approved' && String(p.external_reference) === id && (p.currency_id || 'BRL') === 'BRL' && +p.transaction_amount >= minimo(env) - 0.001;
+// pagamento aprovado e com pelo menos o valor do plano do pedido, em reais (pedido antigo, sem plano: 89,90)
+const vale = (env, p, id, ped) => p && p.status === 'approved' && String(p.external_reference) === id && (p.currency_id || 'BRL') === 'BRL' && +p.transaction_amount >= +((ped && ped.valor) || 89.9) - 0.001;
 
 async function liberar(env, id, ped, pag) {
   if (ped.codigo) return ped;
@@ -58,7 +60,7 @@ async function liberar(env, id, ped, pag) {
   const usado = await env.PEDIDOS.get('pag:' + pag.id);
   if (usado && usado !== id) return ped;
   const nome = ped.nome || [pag.payer && pag.payer.first_name, pag.payer && pag.payer.last_name].filter(Boolean).join(' ') || 'Colaborador';
-  const { codigo, ate } = await gerarCodigo(env, nome, ped.maq, Date.now());
+  const { codigo, ate } = await gerarCodigo(env, nome, ped.maq, Date.now(), ped.dias || DIAS);
   Object.assign(ped, { status: 'pago', codigo, ate, pagamento: String(pag.id), valorPago: +pag.transaction_amount, pagoEm: Date.now() });
   await env.PEDIDOS.put('pag:' + pag.id, id);
   await env.PEDIDOS.put('ped:' + id, JSON.stringify(ped));
@@ -69,7 +71,7 @@ async function conferir(env, id, ped) {
   if (ped.codigo) return ped;
   const r = await mp(env, '/v1/payments/search?sort=date_created&criteria=desc&external_reference=' + encodeURIComponent(id));
   const l = (r && r.results) || [];
-  const ok = l.find(p => vale(env, p, id));
+  const ok = l.find(p => vale(env, p, id, ped));
   if (ok) return liberar(env, id, ped, ok);
   const vivo = l.some(p => ['pending', 'in_process', 'authorized', 'in_mediation'].includes(p.status));
   ped.status = !vivo && l.some(p => ['rejected', 'cancelled', 'refunded', 'charged_back'].includes(p.status)) ? 'recusado' : 'aguardando';
@@ -79,20 +81,22 @@ async function conferir(env, id, ped) {
 async function criar(req, env) {
   let b = null; try { b = await req.json(); } catch (_) {}
   if (!b || !maqOk(b.maq)) return json({ erro: 'Código do computador inválido.' }, 400);
-  const valor = Math.round(+b.valor * 100) / 100;
-  if (!(valor >= minimo(env) - 0.001) || valor > 100000) return json({ erro: 'A colaboração é a partir de R$ ' + minimo(env).toFixed(2).replace('.', ',') + ' por ano.' }, 400);
+  // programa antigo manda só o valor: R$ 499,00 ou mais vale como anual; menos que isso, pede para atualizar
+  const plano = PLANOS[b.plano] ? b.plano : (+b.valor >= PLANOS.anual.valor - 0.001 ? 'anual' : null);
+  if (!plano) return json({ erro: b.plano ? 'Plano inválido.' : VELHO }, 400);
+  const P = PLANOS[plano], valor = P.valor;
   const id = [...crypto.getRandomValues(new Uint8Array(12))].map(x => x.toString(16).padStart(2, '0')).join('');
   const maq = b.maq.trim().toUpperCase().replace(/^(.{4})-?(.{4})$/, '$1-$2');
   const nome = String(b.nome || '').replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, 60);
   const origem = (env.ORIGEM || new URL(req.url).origin).replace(/\/$/, '');
   const pref = await mp(env, '/checkout/preferences', { method: 'POST', headers: { 'x-idempotency-key': id }, body: JSON.stringify({
-    items: [{ id: 'colaboracao', title: 'Colaboração Motion Church (1 ano)', description: 'Uso do Motion Church por um ano no computador ' + maq, quantity: 1, currency_id: 'BRL', unit_price: valor }],
+    items: [{ id: 'colaboracao-' + plano, title: 'Colaboração Motion Church (' + P.nome + ')', description: 'Uso do Motion Church por ' + P.desc + ' no computador ' + maq, quantity: 1, currency_id: 'BRL', unit_price: valor }],
     external_reference: id, notification_url: origem + '/mp',
     back_urls: { success: origem + '/obrigado?p=' + id, pending: origem + '/obrigado?p=' + id, failure: origem + '/obrigado?p=' + id }, auto_return: 'approved',
-    statement_descriptor: 'MOTIONCHURCH', metadata: { maq, pedido: id },
+    statement_descriptor: 'MOTIONCHURCH', metadata: { maq, pedido: id, plano },
     payment_methods: { excluded_payment_types: [{ id: 'ticket' }], installments: 1 }
   }) });
-  await env.PEDIDOS.put('ped:' + id, JSON.stringify({ maq, valor, nome, criado: Date.now(), status: 'aguardando' }), { expirationTtl: 60 * 86400 });
+  await env.PEDIDOS.put('ped:' + id, JSON.stringify({ maq, plano, dias: P.dias, valor, nome, criado: Date.now(), status: 'aguardando' }), { expirationTtl: 60 * 86400 });
   return json({ id, url: pref.init_point });
 }
 
@@ -126,7 +130,8 @@ async function aviso(req, env) {
   try {
     const p = await mp(env, '/v1/payments/' + pid), id = String(p.external_reference || '');
     const t = /^[0-9a-f]{24}$/.test(id) && await env.PEDIDOS.get('ped:' + id);
-    if (t && vale(env, p, id)) await liberar(env, id, JSON.parse(t), p);
+    const ped = t && JSON.parse(t);
+    if (ped && vale(env, p, id, ped)) await liberar(env, id, ped, p);
   } catch (_) {}
   return new Response('ok');
 }
@@ -158,4 +163,4 @@ export default {
     } catch (e) { return json({ erro: 'Não deu para falar com o Mercado Pago agora. Tente de novo em alguns minutos.' }, 502); }
   }
 };
-export { gerarCodigo, paraB32, deB32 };
+export { gerarCodigo, paraB32, deB32, PLANOS };
