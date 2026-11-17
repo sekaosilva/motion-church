@@ -110,6 +110,16 @@ jobs:
             BP=$(cat /tmp/bpub)
           fi
           echo "BONUSPUB=$BP" >> $GITHUB_ENV
+      - name: Meios de pagamento da conta (diagnóstico do Pix)
+        continue-on-error: true
+        run: |
+          M=$(printf '%s' "${{ secrets.MP_TOKEN }}" | tr -d ' \r\n\t')
+          L=$(curl -sS -m 30 -H "Authorization: Bearer $M" https://api.mercadopago.com/v1/payment_methods || true)
+          echo "::notice::Meios: $(echo "$L" | jq -r '[.[] | "\(.id):\(.payment_type_id):\(.status)"] | join(", ")' 2>/dev/null | head -c 900)"
+          U=$(curl -sS -m 30 -H "Authorization: Bearer $M" https://api.mercadopago.com/users/me || true)
+          echo "::notice::Conta: $(echo "$U" | jq -c '{id, site_id, user_type, tags, status: .status.site_status}' 2>/dev/null | head -c 600)"
+          P=$(curl -sS -m 30 -H "Authorization: Bearer $M" https://api.mercadopago.com/checkout/preferences/3353470384-91b29d90-1da5-4299-bf3c-80cd215e7a45 || true)
+          echo "::notice::Preferência anual: $(echo "$P" | jq -c '{payment_methods, purpose, binary_mode, operation_type}' 2>/dev/null | head -c 600)"
       - name: Conferir que o serviço fala com o Mercado Pago
         run: |
           # endereço novo na Cloudflare pode levar alguns minutos para responder (certificado do subdomínio)
