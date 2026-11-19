@@ -119,6 +119,23 @@ section{padding:92px 0}
 .st ol{margin:0;padding-left:20px;color:var(--dim);font-size:15px;display:flex;flex-direction:column;gap:9px}
 .st ol b{color:var(--fg)}
 .note{margin-top:14px;font-size:13.5px;color:var(--faint)}
+/* configuração mínima */
+.req-head{margin-top:56px;margin-bottom:18px}
+.req-head h3{font-size:22px;font-weight:800}
+.req-head p{color:var(--dim);font-size:15px;margin:6px 0 0}
+.req{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.rq{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;display:flex;flex-direction:column;gap:14px}
+.rq h4{font-size:17px;font-weight:800;margin:0}
+.rq .lv{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin:0 0 6px}
+.rq .lv.r{color:var(--accent2)}
+.rq dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:0;font-size:14.5px}
+.rq dt{color:var(--faint)}
+.rq dd{margin:0;color:var(--fg)}
+.rq hr{border:0;border-top:1px solid var(--line);margin:2px 0}
+.req-all{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px 24px;color:var(--dim);font-size:14.5px}
+.req-all ul{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.req-all b{color:var(--fg)}
+@media (max-width:900px){.req{grid-template-columns:1fr}}
 
 /* aulas */
 .player{display:grid;grid-template-columns:1.7fr 1fr;gap:20px;align-items:start}
@@ -386,6 +403,19 @@ h1,h2,h3{text-wrap:balance}p,li,.lead{text-wrap:pretty}
       <ol><li>Abra o <b>MotionChurch-Windows.exe</b> baixado.</li><li>Se aparecer <b>"O Windows protegeu o computador"</b>, clique em <b>Mais informações</b> e depois em <b>Executar assim mesmo</b>.</li><li>Clique em <b>Instalar</b>. O atalho fica na Área de Trabalho e no menu Iniciar.</li></ol>
       <p class="note">O aviso do passo 2 é normal para programas novos, fora da loja da Microsoft.</p></div>
   </div>
+
+  <div class="req-head" id="requisitos"><h3>Configuração mínima</h3><p>O que cada computador precisa para rodar o Motion Church. Com o mínimo, um telão Full HD com vídeo, letra e câmera roda bem. Para saída 4K, várias telas ou muitas camadas ao mesmo tempo, use o recomendado.</p></div>
+  <div class="req">
+    <div class="rq"><h4>Mac com chip Apple</h4><div><p class="lv">Mínimo · telão Full HD</p><dl><dt>Sistema</dt><dd>macOS 13 Ventura</dd><dt>Chip</dt><dd>M1</dd><dt>Memória</dt><dd>8 GB</dd><dt>Espaço</dt><dd>2 GB livres</dd></dl></div><hr><div><p class="lv r">Recomendado · 4K ou várias telas</p><dl><dt>Sistema</dt><dd>macOS 14 ou mais novo</dd><dt>Chip</dt><dd>M2 Pro, M3 ou mais novo</dd><dt>Memória</dt><dd>16 GB</dd><dt>Espaço</dt><dd>SSD com espaço para os vídeos</dd></dl></div></div>
+    <div class="rq"><h4>Mac com Intel</h4><div><p class="lv">Mínimo · telão Full HD</p><dl><dt>Sistema</dt><dd>macOS 13 Ventura</dd><dt>Processador</dt><dd>Intel Core i5, 4 núcleos</dd><dt>Vídeo</dt><dd>Intel Iris Plus ou UHD 630</dd><dt>Memória</dt><dd>8 GB</dd><dt>Espaço</dt><dd>2 GB livres</dd></dl></div><hr><div><p class="lv r">Recomendado · 4K ou várias telas</p><dl><dt>Processador</dt><dd>Intel Core i7 ou i9</dd><dt>Vídeo</dt><dd>placa AMD Radeon Pro</dd><dt>Memória</dt><dd>16 GB</dd><dt>Espaço</dt><dd>SSD com espaço para os vídeos</dd></dl></div></div>
+    <div class="rq"><h4>Windows</h4><div><p class="lv">Mínimo · telão Full HD</p><dl><dt>Sistema</dt><dd>Windows 10 ou 11, 64 bits</dd><dt>Processador</dt><dd>Intel Core i5 (8ª geração) ou AMD Ryzen 5</dd><dt>Vídeo</dt><dd>Intel UHD 620 ou AMD Radeon Vega, com DirectX 12</dd><dt>Memória</dt><dd>8 GB</dd><dt>Espaço</dt><dd>2 GB livres</dd></dl></div><hr><div><p class="lv r">Recomendado · 4K ou várias telas</p><dl><dt>Processador</dt><dd>Intel Core i7 ou AMD Ryzen 7</dd><dt>Vídeo</dt><dd>NVIDIA GeForce GTX 1650 ou AMD Radeon RX 6000, ou melhor</dd><dt>Memória</dt><dd>16 GB</dd><dt>Espaço</dt><dd>SSD com espaço para os vídeos</dd></dl></div></div>
+  </div>
+  <div class="req-all"><b>Em qualquer computador</b>
+    <ul><li>Uma <b>saída de vídeo</b> livre (HDMI, DisplayPort ou USB-C) para ligar a processadora de LED ou o projetor. Para várias telas, uma saída para cada uma.</li>
+    <li>Tela do operador com pelo menos <b>1366 × 768</b>; 1920 × 1080 é o ideal.</li>
+    <li>Para câmera ao vivo: webcam USB ou <b>placa de captura</b> para câmera e mesa de corte com HDMI.</li>
+    <li>Internet só para ativar a colaboração, receber atualizações e baixar o bônus. O culto roda <b>sem internet</b>.</li>
+    <li>Mantenha o driver de vídeo atualizado e, no notebook, deixe o carregador ligado durante o culto.</li></ul></div>
 </div></section>
 
 <section id="aulas"><div class="wrap">
