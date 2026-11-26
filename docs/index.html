@@ -198,6 +198,7 @@ summary::-webkit-details-marker{display:none}
 summary::after{content:"+";color:var(--accent);font-weight:800;font-size:20px;line-height:1}
 details[open] summary::after{content:"–"}
 details p{margin:10px 0 0;color:var(--dim);font-size:15px}
+details ol{margin:10px 0 0;padding-left:20px;color:var(--dim);font-size:15px;line-height:1.6;display:flex;flex-direction:column;gap:6px}details b{color:var(--fg)}details a{color:var(--accent2)}
 
 footer{border-top:1px solid var(--line);padding:36px 0 50px;color:var(--faint);font-size:14px}
 footer .wrap{display:flex;flex-wrap:wrap;gap:16px 30px;align-items:center;justify-content:space-between}
@@ -461,7 +462,10 @@ h1,h2,h3{text-wrap:balance}p,li,.lead{text-wrap:pretty}
     <details><summary>Dá para usar com projetores?</summary><p>Sim. O assistente Blend de projetores junta 2 a 6 projetores numa imagem só, lado a lado ou um em cima do outro, com a borda suave na emenda já pronta. Cada borda tem ajuste fino de largura e curva, e o Deformar acerta projetor torto canto a canto (keystone).</p></details>
     <details><summary>Funciona com qualquer painel de LED?</summary><p>Sim. A processadora de LED enxerga o computador como um monitor: o programa manda a imagem pelo cabo HDMI e cada tela recebe o seu pedaço.</p></details>
     <details><summary>Quais arquivos de vídeo abrem?</summary><p>MP4 ou MOV em H.264, WebM, imagens PNG e JPG (inclusive com fundo transparente) e áudio MP3 ou WAV.</p></details>
-    <details><summary>E as versões da Bíblia?</summary><p>Vêm três versões de uso livre: Bíblia Livre, Bíblia Livre Textus Receptus e Nova Versão de Acesso Livre. Outras versões podem ser importadas por quem tem o arquivo.</p></details>
+    <details><summary>E a NVI, a Almeida e as outras versões da Bíblia?</summary><p>O programa vem com três versões de uso livre: <b>Bíblia Livre</b>, <b>Bíblia Livre Textus Receptus</b> e <b>Nova Versão de Acesso Livre</b>.</p>
+      <p>Versões como <b>NVI, ARA, ARC, ACF, NAA, NTLH e NVT</b> têm direitos autorais das editoras. Por isso elas não vêm no programa nem podem ser baixadas aqui. Se a sua igreja já tem o arquivo de uma delas, é só importar no seu computador:</p>
+      <ol><li>Na aba <b>Bíblia</b>, clique em <b>Versões e aparência</b>.</li><li>Clique em <b>Importar versão</b> e escolha os arquivos (pode escolher vários de uma vez). Aceita <b>JSON</b> e <b>XML</b> no formato Zefania.</li><li>Pronto: a versão entra na lista e fica guardada naquele computador, mesmo depois das atualizações. Arquivo com o nome da sigla (por exemplo <b>NVI.json</b>) aparece com o nome completo.</li></ol>
+      <p>Em outro computador, leve o arquivo num pendrive e importe lá também. <a href="#aulas" data-aula="15-versoes">Veja a aula 15</a>.</p></details>
     <details><summary>Perco meus projetos ao atualizar?</summary><p>Não. Projetos, banco de letras e o código de colaborador ficam guardados no computador e continuam depois de cada atualização.</p></details>
     <details><summary>Tenho mais de um evento no mesmo dia. Preciso mapear de novo?</summary><p>Não. Em cima da grade de clipes ficam as abas dos eventos: "+ Novo evento" usa o mesmo mapeamento e copia a grade atual, e você troca só o que muda.</p></details>
     <details><summary>Posso usar em mais de um computador?</summary><p>Pode instalar em quantos quiser e testar 15 dias em cada um. A colaboração é por computador: cada código de colaborador vale só no computador para o qual foi gerado.</p></details>
@@ -493,6 +497,7 @@ const AULAS=[
   {f:'12-nos',n:'Módulo 12',t:'Deformar com nós',d:'Além dos quatro cantos, nós no meio da imagem: deixar abaulada, ovalada ou com os cantos redondos, numa tela de LED curva ou num projetor em tela curva ou parede redonda.',s:314},
   {f:'13-areas',n:'Módulo 13',t:'Áreas das camadas',d:'Juntar telas numa área com nome no Mapeamento e escolher, no Evento, onde cada camada toca: uma camada com o fundo em todas as telas, como uma imagem só, e outra por cima só no telão do centro ou nas laterais.',s:229},
   {f:'14-deck',n:'Módulo 14',t:'Ulanzi Deck',d:'Instalar o plugin no Mac ou no Windows e controlar o culto pelo Ulanzi Creative Deck: colunas com a miniatura do clipe, apagar tela, pausar, som, os botões de girar para a letra, o cronômetro e a coluna, e as quatro páginas.',s:190},
+  {f:'15-versoes',n:'Módulo 15',t:'Outras versões da Bíblia',d:'As três versões livres que vêm com o programa e como importar no seu computador outras versões que a igreja já tem (NVI, Almeida e outras), em JSON ou XML, várias de uma vez.',s:119},
 ];
 const $=s=>document.querySelector(s),mmss=s=>Math.floor(s/60)+':'+String(Math.round(s%60)).padStart(2,'0');
 const grade=$('#grade'),vid=$('#vid');let cur=0;
